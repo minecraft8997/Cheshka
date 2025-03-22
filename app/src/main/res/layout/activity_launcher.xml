@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_margin="5dp">
+
+        <ImageView
+            android:id="@+id/game_image_logo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:adjustViewBounds="true"
+            android:contentDescription="@string/game_logo_text"
+            android:src="@drawable/cheshka_logo_beta"
+            android:layout_marginBottom="12dp" />
+
+        <!-- Should be displayed only in landscape mode. -->
+        <LinearLayout
+            android:id="@+id/game_text_logo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="12dp"
+            android:orientation="horizontal"
+            android:gravity="center">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/app_name"
+                android:fontFamily="sans-serif"
+                android:textColor="@color/white"
+                android:textSize="48sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/beta_text"
+                android:fontFamily="sans-serif"
+                android:textColor="@color/white"
+                android:textSize="16sp" />
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/singleplayer_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/singleplayer_text" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="@string/or_text" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:labelFor="@id/server_address_field"
+            android:text="@string/server_address_text" />
+
+        <EditText
+            android:id="@+id/server_address_field"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:minHeight="48dp"
+            android:autofillHints=""
+            android:inputType="text"
+            android:text="@string/server_address_example"
+            android:hint="@string/server_address_example" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:labelFor="@id/server_port_field"
+            android:text="@string/server_port_text" />
+
+        <EditText
+            android:id="@+id/server_port_field"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:minHeight="48dp"
+            android:autofillHints=""
+            android:inputType="number"
+            android:text="@string/server_port_example"
+            android:hint="@string/server_port_example" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:labelFor="@id/server_port_field"
+            android:text="@string/username_text" />
+
+        <EditText
+            android:id="@+id/username_field"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:minHeight="48dp"
+            android:autofillHints="username"
+            android:inputType="text"
+            android:hint="@string/username_example" />
+
+        <Button
+            android:id="@+id/proceed_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/proceed_text" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="@string/game_settings_text" />
+
+        <CheckBox
+            android:id="@+id/sounds_checkbox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:minHeight="48dp"
+            android:text="@string/sounds_checkbox_text" />
+
+        <CheckBox
+            android:id="@+id/timer_checkbox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:minHeight="48dp"
+            android:text="@string/timer_checkbox_text" />
+
+        <CheckBox
+            android:id="@+id/movement_animation_checkbox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:minHeight="48dp"
+            android:text="@string/movement_animation_checkbox_text" />
+
+        <CheckBox
+            android:id="@+id/eval_bar_checkbox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:minHeight="48dp"
+            android:text="@string/eval_bar_checkbox_text" />
+
+        <TextView
+            android:id="@+id/copyright_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center" />
+
+        <Button
+            android:id="@+id/show_assets_attribution_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/assets_attribution_text" />
+
+        <TextView
+            android:id="@+id/attribution_title_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:textStyle="bold"
+            android:text="@string/assets_attribution_text"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/attribution_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/links_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/links_text"
+            android:gravity="center"
+            android:layout_marginBottom="16dp" />
+    </LinearLayout>
+</ScrollView>

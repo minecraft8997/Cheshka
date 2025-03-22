@@ -1,0 +1,41 @@
+plugins {
+    alias(libs.plugins.android.application)
+}
+
+android {
+    namespace 'ru.deewend.cheshka'
+    compileSdk 34
+
+    defaultConfig {
+        applicationId "ru.deewend.cheshka"
+        minSdk 16
+        targetSdk 34
+        versionCode 3
+        versionName "1.0.2b"
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    buildFeatures {
+        buildConfig true
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    packaging {
+        resources {
+            excludes += '/META-INF/{AL2.0,LGPL2.1}'
+        }
+    }
+}
+
+dependencies {
+    implementation libs.androidx.appcompat
+}

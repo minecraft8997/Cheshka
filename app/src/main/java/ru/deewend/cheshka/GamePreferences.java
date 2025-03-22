@@ -1,0 +1,138 @@
+package ru.deewend.cheshka;
+
+import static ru.deewend.cheshka.Helper.*;
+
+import android.content.Context;
+import android.content.SharedPreferences;
+
+import java.util.Objects;
+import java.util.UUID;
+
+public class GamePreferences {
+    public static final String PREFERENCE_ID = BuildConfig.APPLICATION_ID + ".GamePreferences";
+
+    private final SharedPreferences preferences;
+    private String serverAddress;
+    private int serverPort;
+    private String username;
+    private UUID clientId;
+    private boolean enableSounds;
+    private boolean showPlaytime;
+    private boolean enableMovementAnimation;
+    private boolean enableEvalBar;
+
+    private int latestLoadHashCode = hashCode();
+
+    public GamePreferences(Context context) {
+        preferences = context.getSharedPreferences(PREFERENCE_ID, Context.MODE_PRIVATE);
+
+        loadPreferences();
+    }
+
+    public void loadPreferences() {
+        serverAddress = preferences.getString("serverAddress", DEFAULT_STRING_VALUE);
+        serverPort = preferences.getInt("serverPort", DEFAULT_INT_VALUE);
+        username = preferences.getString("username", DEFAULT_STRING_VALUE);
+        clientId = UUID.fromString(preferences.getString("clientId", NULL_UUID));
+        enableSounds = preferences.getBoolean("enableSounds", true);
+        showPlaytime = preferences.getBoolean("showPlaytime", true);
+        enableMovementAnimation =
+                preferences.getBoolean("enableMovementAnimation", true);
+        enableEvalBar = preferences.getBoolean("enableEvalBar", false);
+
+        latestLoadHashCode = hashCode();
+    }
+
+    public void savePreferences() {
+        if (latestLoadHashCode == hashCode()) return; // looks like there are no changes
+
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putString("serverAddress", serverAddress);
+        editor.putInt("serverPort", serverPort);
+        editor.putString("username", username);
+        editor.putString("clientId", clientId.toString());
+        editor.putBoolean("enableSounds", enableSounds);
+        editor.putBoolean("showPlaytime", showPlaytime);
+        editor.putBoolean("enableMovementAnimation", enableMovementAnimation);
+        editor.putBoolean("enableEvalBar", enableEvalBar);
+        editor.apply();
+    }
+
+    public boolean isServerSpecified() {
+        return !serverAddress.isEmpty();
+    }
+
+    public String getServerAddress() {
+        return serverAddress;
+    }
+
+    public int getServerPort() {
+        return serverPort;
+    }
+
+    public boolean hasCredentials() {
+        return !clientId.equals(NULL_UUID_OBJ);
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public UUID getClientId() {
+        return clientId;
+    }
+
+    public boolean shouldEnableSounds() {
+        return enableSounds;
+    }
+
+    public boolean shouldShowPlaytime() {
+        return showPlaytime;
+    }
+
+    public boolean shouldEnableMovementAnimation() {
+        return enableMovementAnimation;
+    }
+
+    public boolean shouldEnableEvalBar() {
+        return enableEvalBar;
+    }
+
+    public void setServerAddress(String serverAddress) {
+        this.serverAddress = serverAddress;
+    }
+
+    public void setServerPort(int serverPort) {
+        this.serverPort = serverPort;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public void setClientId(UUID clientId) {
+        this.clientId = clientId;
+    }
+
+    public void setEnableSounds(boolean enableSounds) {
+        this.enableSounds = enableSounds;
+    }
+
+    public void setShowPlaytime(boolean showPlaytime) {
+        this.showPlaytime = showPlaytime;
+    }
+
+    public void setEnableMovementAnimation(boolean enableMovementAnimation) {
+        this.enableMovementAnimation = enableMovementAnimation;
+    }
+
+    public void setEnableEvalBar(boolean enableEvalBar) {
+        this.enableEvalBar = enableEvalBar;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(serverAddress, serverPort, username, clientId,
+                enableSounds, showPlaytime, enableMovementAnimation, enableEvalBar);
+    }
+}
