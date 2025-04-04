@@ -160,7 +160,7 @@ public class BoardView extends CheshkaView {
         if (!highlighting) stopHighlighting();
 
         activity.renderTick();
-        if (handler.singleplayer) Singleplayer.tick();
+        if (handler.singleplayer) Singleplayer.tick(activity);
         MovementAnimationManager.getInstance().tick();
     }
 
@@ -198,6 +198,8 @@ public class BoardView extends CheshkaView {
     public boolean performClick() {
         boolean returnValue = super.performClick();
 
+        if (cellSize == 0) return returnValue;
+
         float x = touchPos.first;
         float y = touchPos.second;
         float upperEdge = size - adjustment;
@@ -231,7 +233,7 @@ public class BoardView extends CheshkaView {
     }
 
     private boolean isDiceRolling() {
-        return ((InGameActivity) activity).getDiceView().isRolling();
+        return ((InGameActivity) activity).isDiceRolling();
     }
 
     @Override

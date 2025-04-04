@@ -10,8 +10,8 @@ android {
         applicationId "ru.deewend.cheshka"
         minSdk 16
         targetSdk 34
-        versionCode 3
-        versionName "1.0.2b"
+        versionCode 4
+        versionName "1.1d"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }

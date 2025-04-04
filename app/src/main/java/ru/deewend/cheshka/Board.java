@@ -530,7 +530,7 @@ public class Board {
 
     @SuppressWarnings("ExtractMethodRecommender")
     public MakeMove makeMove(PossibleMove move, boolean automatic) {
-        if (gameState != GAME_STATE_RUNNING) return null;
+        if (move == null || gameState != GAME_STATE_RUNNING) return null;
         int initialPosition = (move.piece != null ? move.piece.position : move.getDestination());
 
         move.makeMove();
@@ -675,6 +675,14 @@ public class Board {
         if (lastDiceRollResult == null) return Collections.emptyList();
 
         return lastDiceRollResult.second;
+    }
+
+    public PossibleMove getSpawningMove() {
+        for (Board.PossibleMove move : getPossibleMoves()) {
+            if (move.isSpawningMove()) return move;
+        }
+
+        return null;
     }
 
     public boolean isWhitesTurn() {

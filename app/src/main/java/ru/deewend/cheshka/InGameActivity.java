@@ -131,6 +131,9 @@ public class InGameActivity extends CheshkaActivity {
         byte gameState;
         if ((gameState = board.getGameState()) != Board.GAME_STATE_RUNNING) {
             if (!resignButtonRenamed) {
+                findViewById(R.id.roll_dice_button).setEnabled(false);
+                findViewById(R.id.place_checker_button).setEnabled(false);
+
                 ((Button) findViewById(R.id.resign_button))
                         .setText(getString(R.string.goto_main_menu_text));
 
@@ -165,9 +168,6 @@ public class InGameActivity extends CheshkaActivity {
         String whoseTurn = (myTurn ?
                 getString(R.string.your_turn_fragment) : getString(R.string.opponents_turn_fragment)
         );
-        boolean diceRolled = board.isDiceRolled();
-        String diceStatusReplacement = diceRolled ?
-                getString(R.string.empty_fragment) : getString(R.string.not_fragment);
 
         int secondsForTurn = handler.secondsForTurn;
         long deltaSeconds = TimeUnit.MILLISECONDS
@@ -176,34 +176,23 @@ public class InGameActivity extends CheshkaActivity {
         if (secondsLeft > secondsForTurn) secondsLeft = secondsForTurn;
         if (secondsLeft < 0L) secondsLeft = 0L;
 
-        boolean noMoves = (diceRolled && board.getPossibleMoves().isEmpty());
-        if (noMoves) secondsLeft /= 2L;
-
-        int secondsLeftFormId;
-        if (secondsLeft == 0L) {
-            secondsLeftFormId = R.string.s_plural_1;
-        } else if (secondsLeft == 1L) {
-            secondsLeftFormId = R.string.s_singular;
-        } else if (secondsLeft <= 4L) {
-            secondsLeftFormId = R.string.s_plural_2;
-        } else {
-            secondsLeftFormId = R.string.s_plural_1;
-        }
-        String secondsLeftForm = getString(secondsLeftFormId);
+        boolean logicalDiceRolled = board.isDiceRolled();
+        boolean renderingDiceStill = !isDiceRolling();
+        boolean noMoves = (logicalDiceRolled && board.getPossibleMoves().isEmpty());
+        if (noMoves && renderingDiceStill) secondsLeft /= 2L;
 
         int statusResId = (handler.singleplayer ?
                 R.string.singleplayer_game_status_text : R.string.game_status_text);
-        String statusText = getString(statusResId,
-                whoseTurn,
-                diceStatusReplacement,
-                secondsLeft,
-                secondsLeftForm
-        );
-        if (noMoves) {
-            statusText += ". " + getString(R.string.no_moves_text);
+        String statusText = getString(statusResId, whoseTurn, secondsLeft);
+        if (noMoves && renderingDiceStill) {
+            statusText += ", " + getString(R.string.no_moves_text);
         }
-        statusText += afkString(board.getWhitesAutomaticMoveCount(), true);
-        statusText += afkString(board.getBlacksAutomaticMoveCount(), false);
+        int opponentsAutomaticMoveCount;
+        if (handler.whiteColor) opponentsAutomaticMoveCount = board.getBlacksAutomaticMoveCount();
+        else                    opponentsAutomaticMoveCount = board.getWhitesAutomaticMoveCount();
+        if (opponentsAutomaticMoveCount >= 2 && !handler.singleplayer) {
+            statusText += ". " + getString(R.string.opponent_is_afk);
+        }
 
         statusView.setText(statusText);
 
@@ -214,20 +203,11 @@ public class InGameActivity extends CheshkaActivity {
             ((TextView) findViewById(R.id.player_names_view)).setText(getString(
                     R.string.vs_text, displayName, opponentDisplayName, timePrefix));
         }
-    }
 
-    private String afkString(int automaticMoveCount, boolean white) {
-        PacketHandler handler = PacketHandler.getInstance();
-
-        if (automaticMoveCount >= 2 && !handler.singleplayer) {
-            if (white == handler.whiteColor) {
-                return ". " + getString(R.string.you_are_afk_text);
-            }
-
-            return ". " + getString(R.string.opponent_is_afk);
-        }
-
-        return "";
+        boolean enableDiceButton = (myTurn && !logicalDiceRolled);
+        boolean enableCheckerButton = (myTurn && renderingDiceStill && board.getSpawningMove() != null);
+        findViewById(R.id.roll_dice_button).setEnabled(enableDiceButton);
+        findViewById(R.id.place_checker_button).setEnabled(enableCheckerButton);
     }
 
     @Override
@@ -248,21 +228,12 @@ public class InGameActivity extends CheshkaActivity {
             }
         } else if (id == R.id.place_checker_button) {
             if (board.isWhitesTurn() == handler.whiteColor) {
-                MakeMove makeMove = null;
-                for (Board.PossibleMove move : board.getPossibleMoves()) {
-                    if (!move.isSpawningMove()) continue;
+                Board.PossibleMove spawningMove = board.getSpawningMove();
+                MakeMove makeMove = board.makeMove(spawningMove, false);
 
-                    makeMove = board.makeMove(move, false);
-
-                    break;
+                if (makeMove != null && !handler.singleplayer) {
+                    NetworkingThread.staticSend(makeMove);
                 }
-                if (makeMove != null) {
-                    if (!handler.singleplayer) NetworkingThread.staticSend(makeMove);
-                } else {
-                    toast(R.string.no_spawning_move_text);
-                }
-            } else {
-                toast(R.string.opponents_turn_text);
             }
         } else {
             if (resignButtonRenamed) {
@@ -290,12 +261,12 @@ public class InGameActivity extends CheshkaActivity {
         return DO_NOT_DISABLE;
     }
 
-    private void toast(int resId) {
-        Toast.makeText(this, resId, Toast.LENGTH_SHORT).show();
+    public boolean isDiceRolling() {
+        return diceView.isRolling();
     }
 
-    public DiceView getDiceView() {
-        return diceView;
+    private void toast(int resId) {
+        Toast.makeText(this, resId, Toast.LENGTH_SHORT).show();
     }
 
     public GamePreferences getPreferences() {

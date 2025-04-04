@@ -26,7 +26,7 @@ public class Singleplayer {
         Helper.startActivity(context, InGameActivity.class);
     }
 
-    public static void tick() {
+    public static void tick(InGameActivity activity) {
         PacketHandler handler = PacketHandler.getInstance();
         Board board = handler.board;
         if (board.getGameState() != Board.GAME_STATE_RUNNING) return;
@@ -34,7 +34,7 @@ public class Singleplayer {
         if (System.currentTimeMillis() < (timeoutSince + timeoutDuration)) return;
 
         if (whiteColor != board.isWhitesTurn()) {
-            if (board.isDiceRolled() && board.getPossibleMoves().isEmpty()) {
+            if (board.isDiceRolled() && !activity.isDiceRolling() && board.getPossibleMoves().isEmpty()) {
                 if (!playerHelpTimeout) {
                     timeout(1250L + handler.random.nextInt(150));
                     playerHelpTimeout = true;
@@ -50,13 +50,13 @@ public class Singleplayer {
         }
         if (!board.isDiceRolled()) {
             if (!preMoveTimeout) {
-                timeout(2000L + handler.random.nextInt(200));
+                timeout(950L + handler.random.nextInt(200));
                 preMoveTimeout = true;
 
                 return;
             }
             board.rollDice();
-            timeout(1800L + handler.random.nextInt(300));
+            timeout(2000L + handler.random.nextInt(300));
 
             return;
         }
