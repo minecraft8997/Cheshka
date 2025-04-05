@@ -98,22 +98,8 @@ public class Board {
         }
 
         public void makeMove() {
-            List<Piece> targets = new ArrayList<>();
-            for (Piece piece : pieces) {
-                boolean guestOnWhiteSide = (piece.position == 0 && destination == whitesDiagonalStart);
-                boolean waitingWhitePiece = (piece.position == whitesDiagonalStart && destination == 0);
-                if (piece.position == destination || waitingWhitePiece || guestOnWhiteSide) {
-                    targets.add(piece);
-                }
-            }
-            if (!targets.isEmpty()) {
-                int size;
-                if ((size = targets.size()) > 1) {
-                    CrashReport.getInstance().createReport(
-                            "too many \"targets\" (" + size + ")", new Exception());
-                }
-                pieces.removeAll(targets);
-            }
+            Piece target = getTarget();
+            if (target != null) pieces.remove(target);
 
             if (isSpawningMove()) {
                 Piece piece = new Piece(whitesTurn);
@@ -135,6 +121,21 @@ public class Board {
                 MovementAnimationManager
                         .getInstance().registerAnimation(x1, y1, x2, y2, piece.whitePiece);
             }
+        }
+
+        public Piece getTarget() {
+            Piece target = null;
+            for (Piece piece : pieces) {
+                boolean guestOnWhiteSide = (piece.position == 0 && destination == whitesDiagonalStart);
+                boolean waitingWhitePiece = (piece.position == whitesDiagonalStart && destination == 0);
+                if (piece.position == destination || waitingWhitePiece || guestOnWhiteSide) {
+                    target = piece;
+
+                    break;
+                }
+            }
+
+            return target;
         }
 
         public byte getMoveType() {
@@ -687,6 +688,14 @@ public class Board {
 
     public boolean isWhitesTurn() {
         return whitesTurn;
+    }
+
+    public int getWhitesDiagonalStart() {
+        return whitesDiagonalStart;
+    }
+
+    public int getBlacksSpawnPosition() {
+        return blacksSpawnPosition;
     }
 
     public long getLastActionTimestamp() {

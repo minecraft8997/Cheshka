@@ -87,7 +87,7 @@ public class LauncherActivity extends CheshkaActivity {
     @Override
     protected byte onClick(int id, Button button) {
         if (id == R.id.singleplayer_button) {
-            Singleplayer.init(this, 6);
+            Singleplayer.init(this, 6, true);
         } else if (id == R.id.proceed_button) {
             Object serverAddress = getEditTextValue(R.id.server_address_field, true);
             Object serverPort = getEditTextValue(R.id.server_port_field, false);
