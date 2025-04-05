@@ -1,5 +1,8 @@
 package ru.deewend.cheshka;
 
+import android.util.Pair;
+
+import java.util.ArrayList;
 import java.util.List;
 
 public class Singleplayer {
@@ -83,9 +86,16 @@ public class Singleplayer {
             }
             if (takePieceIfPossible()) return;
             if (spawnIfPossible()) return;
+            /*
+             * Putting spawnIfPossible() check below any of the following 3 checks
+             * could potentially result in an NPE since they don't count possibility
+             * of move.getPiece() being null if it's a spawning move. Is it worth fixing?
+             */
             if (leaveSpawnPointIfPossible()) return;
+            if (movePieceOnDiagonalIfPossible()) return;
+            if (doNotStepPastOpponentsSpawnPointIfEffective()) return;
 
-            board.makeRandomMove();
+            makeAnyGoodMove();
         } finally {
             Singleplayer.board = null;
             possibleMoves = null;
@@ -93,25 +103,106 @@ public class Singleplayer {
     }
 
     private static boolean takePieceIfPossible() {
-        Board.Piece mostValuableTarget = null;
-        Board.PossibleMove bestMove = null;
+        Board.PossibleMove goodMove = null;
         for (Board.PossibleMove move : possibleMoves) {
             Board.Piece target = move.getTarget();
             if (target == null) continue;
 
-            if (mostValuableTarget == null) {
-                mostValuableTarget = target;
-                bestMove = move;
+            if (move.isSpawningMove()) {
+                goodMove = move;
+
+                break;
+            }
+            if (goodMove == null) {
+                goodMove = move;
             }
             target.computeRealPosition(board);
 
-            if (mostValuableTarget.getLastRealPosition() < target.getLastRealPosition()) {
-                mostValuableTarget = target;
-                bestMove = move;
+            if (goodMove.getPiece().getLastRealPosition() < target.getLastRealPosition()) {
+                goodMove = move;
             }
         }
-        if (bestMove != null) {
-            board.makeMove(bestMove, true);
+
+        return makeMoveIfPresent(goodMove);
+    }
+
+    private static boolean spawnIfPossible() {
+        for (Board.PossibleMove move : possibleMoves) {
+            if (move.isSpawningMove()) return makeMoveIfPresent(move);
+        }
+
+        return false;
+    }
+
+    private static boolean leaveSpawnPointIfPossible() {
+        Board.PossibleMove goodMove = null;
+        for (Board.PossibleMove move : possibleMoves) {
+            int position = move.getPiece().getPosition();
+            Pair<Boolean, Boolean> spawnCheckResult = checkSpawnPoint(position);
+            boolean spawnPoint = spawnCheckResult.first;
+            if (spawnPoint) {
+                goodMove = move;
+
+                boolean whitesSpawn = spawnCheckResult.second;
+                if (whiteColor != whitesSpawn) break;
+            }
+        }
+
+        return makeMoveIfPresent(goodMove);
+    }
+
+    private static boolean movePieceOnDiagonalIfPossible() {
+        Board.PossibleMove goodMove = null;
+        for (Board.PossibleMove move : possibleMoves) {
+            Board.Piece piece = move.getPiece();
+            piece.computeRealPosition(board);
+
+            int realPosition = piece.getLastRealPosition();
+            if (realPosition <= board.getWhitesDiagonalStart()) continue;
+
+            if (goodMove == null) {
+                goodMove = move;
+            }
+            if (goodMove.getPiece().getLastRealPosition() < realPosition) {
+                goodMove = move;
+            }
+        }
+
+        return makeMoveIfPresent(goodMove);
+    }
+
+    private static boolean doNotStepPastOpponentsSpawnPointIfEffective() {
+        for (Board.Piece piece : board.getPieces()) {
+            piece.computeRealPosition(board);
+
+            if (piece.isWhitePiece() == whiteColor) continue;
+
+            if (piece.getLastRealPosition() <= board.getWhitesDiagonalStart()) return false;
+        }
+        for (Board.Piece piece : board.getPieces()) {
+            if (piece.isWhitePiece() != whiteColor) continue;
+
+            // we do not need to compute "real position", was already done before
+            if (piece.getLastRealPosition() >= board.getBlacksSpawnPosition()) return false;
+        }
+        Board.PossibleMove goodMove = null;
+        for (Board.PossibleMove move : possibleMoves) {
+            Board.Piece piece = move.getPiece();
+
+            if (goodMove == null) {
+                goodMove = move;
+            }
+            if (goodMove.getPiece().getLastRealPosition() > piece.getLastRealPosition()) {
+                goodMove = move;
+            }
+        }
+
+        return makeMoveIfPresent(goodMove);
+    }
+
+    private static boolean makeMoveIfPresent(Board.PossibleMove move) {
+        if (move != null) {
+            board.makeMove(move, true);
 
             return true;
         }
@@ -119,33 +210,29 @@ public class Singleplayer {
         return false;
     }
 
-    private static boolean spawnIfPossible() {
+    private static void makeAnyGoodMove() {
+        List<Board.PossibleMove> goodMoves = new ArrayList<>();
         for (Board.PossibleMove move : possibleMoves) {
-            if (move.isSpawningMove()) {
-                board.makeMove(move, true);
+            int destination = move.getDestination();
 
-                return true;
-            }
+            if (!checkSpawnPoint(destination).first) goodMoves.add(move);
         }
+        if (goodMoves.isEmpty()) {
+            board.makeRandomMove();
 
-        return false;
+            return;
+        }
+        int randomIdx = PacketHandler.getInstance().random.nextInt(goodMoves.size());
+        Board.PossibleMove move = goodMoves.get(randomIdx);
+
+        board.makeMove(move, true);
     }
 
-    private static boolean leaveSpawnPointIfPossible() {
-        for (Board.PossibleMove move : possibleMoves) {
-            int position = move.getPiece().getPosition();
-            if (
-                    position == 0 ||
-                    position == board.getBlacksSpawnPosition() ||
-                    position == board.getWhitesDiagonalStart()
-            ) { // this works fine regardless the bot's color
-                board.makeMove(move, true);
+    private static Pair<Boolean, Boolean> checkSpawnPoint(int position) {
+        boolean whitesSpawn = (position == 0 || position == board.getWhitesDiagonalStart());
+        boolean spawnPoint = (whitesSpawn || position == board.getBlacksSpawnPosition());
 
-                return true;
-            }
-        }
-
-        return false;
+        return new Pair<>(spawnPoint, whitesSpawn);
     }
 
     private static void timeout(long durationMillis) {
