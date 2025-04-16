@@ -235,6 +235,36 @@ public class Board {
     }
 
     public int randomDigit() {
+        int digit = trulyRandomDigit();
+        if (PacketHandler.getInstance().singleplayer &&
+                Singleplayer.isNoticeablyHard() && Singleplayer.isPlayersTurn()
+        ) {
+            rollDice0(digit);
+            boolean rollAgain = false;
+            for (PossibleMove move : getPossibleMoves()) {
+                if (move.isSpawningMove() && random.nextInt(4) == 0) {
+                    rollAgain = true;
+                } else if (move.getTarget() != null && random.nextInt(2) == 0) {
+                    rollAgain = true;
+                }
+
+                if (rollAgain) break;
+            }
+            if (rollAgain) {
+                digit = trulyRandomDigit();
+                lastDiceRollResult = null;
+            }
+            /*
+             * Not setting lastDiceRollResult to null means that right after the digit
+             * value is returned and rollDice0 is called, the method will immediately return.
+             * This works weird but is exactly what we need.
+             */
+        }
+
+        return digit;
+    }
+
+    private int trulyRandomDigit() {
         return 1 + random.nextInt(6);
     }
 

@@ -252,7 +252,7 @@ public class InGameActivity extends CheshkaActivity {
                     if (handler.singleplayer) board.resign(handler.whiteColor);
                     else                      NetworkingThread.staticSend(new Resign());
                 });
-                builder.setNegativeButton(R.string.cancel_text, null);
+                Helper.defaultNegativeButton(builder);
 
                 builder.create().show();
             }

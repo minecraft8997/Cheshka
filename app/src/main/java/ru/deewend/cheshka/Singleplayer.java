@@ -7,9 +7,12 @@ import java.util.List;
 
 public class Singleplayer {
     public static final int NO_MOVE_DRAW_THRESHOLD = 24;
+    public static final int MODE_NORMAL = 0;
+    public static final int MODE_HARD = 1;
+    public static final int MODE_NOTICEABLY_HARD = 2;
 
     private static boolean whiteColor;
-    private static boolean hardMode;
+    private static int mode;
     private static boolean preMoveTimeout;
     private static boolean playerHelpTimeout;
     private static long timeoutSince;
@@ -20,11 +23,12 @@ public class Singleplayer {
     private Singleplayer() {
     }
 
-    public static void init(CheshkaActivity context, int boardSize, boolean hardMode) {
-        Singleplayer.hardMode = hardMode;
+    public static void init(CheshkaActivity context, int boardSize, int mode) {
+        Singleplayer.mode = mode;
 
         PacketHandler handler = PacketHandler.getInstance();
         handler.singleplayer = true;
+        handler.displayName = context.getString(R.string.you_text);
         handler.opponentDisplayName = context.getString(R.string.bot_text);
         handler.boardSize = boardSize;
         handler.secondsForTurn = 0;
@@ -43,7 +47,7 @@ public class Singleplayer {
 
         if (System.currentTimeMillis() < (timeoutSince + timeoutDuration)) return;
 
-        if (whiteColor != board.isWhitesTurn()) {
+        if (isPlayersTurn()) {
             if (board.isDiceRolled() && !activity.isDiceRolling() && board.getPossibleMoves().isEmpty()) {
                 if (!playerHelpTimeout) {
                     timeout(1250L + handler.random.nextInt(150));
@@ -79,7 +83,7 @@ public class Singleplayer {
         Singleplayer.board = board;
         possibleMoves = board.getPossibleMoves();
         try {
-            if (possibleMoves.isEmpty() || !hardMode) {
+            if (possibleMoves.isEmpty() || mode == MODE_NORMAL) {
                 board.makeRandomMove();
 
                 return;
@@ -240,9 +244,17 @@ public class Singleplayer {
         timeoutDuration = durationMillis;
     }
 
+    public static boolean isNoticeablyHard() {
+        return (mode == MODE_NOTICEABLY_HARD);
+    }
+
+    public static boolean isPlayersTurn() {
+        return whiteColor != PacketHandler.getInstance().board.isWhitesTurn();
+    }
+
     public static void reset() {
         whiteColor = false;
-        hardMode = false;
+        mode = MODE_NORMAL;
         preMoveTimeout = false;
         playerHelpTimeout = false;
         timeoutSince = 0L;

@@ -82,4 +82,19 @@
     <string name="resign_title_text">You are about to resign</string>
     <string name="issue_detected_text">An issue was detected</string>
     <string name="issue_detected_description_text">The game has detected an unexpected issue and generated a crash report. You can help the developers by sending this report via your mail client. If this behavior is supported, you\'ll have the opportunity to review its contents before sending</string>
+    <string name="special_highlighting_text">Enable special highlighting for pieces turning onto the diagonal line</string>
+    <string name="difficulty_text">Difficulty:</string>
+    <string name="board_size_text">Board size:</string>
+    <string-array name="difficulty_array">
+        <item>Normal</item>
+        <item>Hard</item>
+        <item>Noticeably hard</item>
+    </string-array>
+    <string-array name="board_size_array">
+        <item>6 × 6</item>
+        <item>8 × 8 (standard)</item>
+        <item>10 × 10</item>
+    </string-array>
+    <string name="singleplayer_options_title">Singleplayer options</string>
+    <string name="you_text">You</string>
 </resources>

@@ -19,7 +19,10 @@ public class GamePreferences {
     private boolean enableSounds;
     private boolean showPlaytime;
     private boolean enableMovementAnimation;
+    private boolean enableSpecialHighlighting;
     private boolean enableEvalBar;
+    private int difficultyDefaultSelection;
+    private int boardSizeDefaultSelection;
 
     private int latestLoadHashCode = hashCode();
 
@@ -36,9 +39,11 @@ public class GamePreferences {
         clientId = UUID.fromString(preferences.getString("clientId", NULL_UUID));
         enableSounds = preferences.getBoolean("enableSounds", true);
         showPlaytime = preferences.getBoolean("showPlaytime", true);
-        enableMovementAnimation =
-                preferences.getBoolean("enableMovementAnimation", true);
+        enableMovementAnimation = preferences.getBoolean("enableMovementAnimation", true);
+        enableSpecialHighlighting = preferences.getBoolean("enableSpecialHighlighting", true);
         enableEvalBar = preferences.getBoolean("enableEvalBar", false);
+        difficultyDefaultSelection = preferences.getInt("difficultyDefaultSelection", 0);
+        boardSizeDefaultSelection = preferences.getInt("boardSizeDefaultSelection", 1);
 
         latestLoadHashCode = hashCode();
     }
@@ -54,7 +59,10 @@ public class GamePreferences {
         editor.putBoolean("enableSounds", enableSounds);
         editor.putBoolean("showPlaytime", showPlaytime);
         editor.putBoolean("enableMovementAnimation", enableMovementAnimation);
+        editor.putBoolean("enableSpecialHighlighting", enableSpecialHighlighting);
         editor.putBoolean("enableEvalBar", enableEvalBar);
+        editor.putInt("difficultyDefaultSelection", difficultyDefaultSelection);
+        editor.putInt("boardSizeDefaultSelection", boardSizeDefaultSelection);
         editor.apply();
     }
 
@@ -94,8 +102,20 @@ public class GamePreferences {
         return enableMovementAnimation;
     }
 
+    public boolean shouldEnableSpecialHighlighting() {
+        return enableSpecialHighlighting;
+    }
+
     public boolean shouldEnableEvalBar() {
         return enableEvalBar;
+    }
+
+    public int getDifficultyDefaultSelection() {
+        return difficultyDefaultSelection;
+    }
+
+    public int getBoardSizeDefaultSelection() {
+        return boardSizeDefaultSelection;
     }
 
     public void setServerAddress(String serverAddress) {
@@ -126,13 +146,36 @@ public class GamePreferences {
         this.enableMovementAnimation = enableMovementAnimation;
     }
 
+    public void setEnableSpecialHighlighting(boolean enableSpecialHighlighting) {
+        this.enableSpecialHighlighting = enableSpecialHighlighting;
+    }
+
     public void setEnableEvalBar(boolean enableEvalBar) {
         this.enableEvalBar = enableEvalBar;
     }
 
+    public void setDifficultyDefaultSelection(int difficultyDefaultSelection) {
+        this.difficultyDefaultSelection = difficultyDefaultSelection;
+    }
+
+    public void setBoardSizeDefaultSelection(int boardSizeDefaultSelection) {
+        this.boardSizeDefaultSelection = boardSizeDefaultSelection;
+    }
+
     @Override
     public int hashCode() {
-        return Objects.hash(serverAddress, serverPort, username, clientId,
-                enableSounds, showPlaytime, enableMovementAnimation, enableEvalBar);
+        return Objects.hash(
+                serverAddress,
+                serverPort,
+                username,
+                clientId,
+                enableSounds,
+                showPlaytime,
+                enableMovementAnimation,
+                enableSpecialHighlighting,
+                enableEvalBar,
+                difficultyDefaultSelection,
+                boardSizeDefaultSelection
+        );
     }
 }

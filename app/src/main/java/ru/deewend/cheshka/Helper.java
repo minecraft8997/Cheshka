@@ -10,10 +10,11 @@ import android.os.Looper;
 import android.text.Editable;
 import android.widget.EditText;
 
+import androidx.appcompat.app.AlertDialog;
+
 import java.io.BufferedReader;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -92,6 +93,10 @@ public class Helper {
         Editable text = ((EditText) activity.findViewById(resId)).getText();
 
         return (text != null ? text.toString().trim() : Helper.DEFAULT_STRING_VALUE);
+    }
+
+    public static void defaultNegativeButton(AlertDialog.Builder builder) {
+        builder.setNegativeButton(R.string.cancel_text, null);
     }
 
     public static int calculateCRC32(byte[] data) {

@@ -79,4 +79,19 @@
     <string name="resign_title_text">Вы собираетесь признать поражение</string>
     <string name="issue_detected_text">Зафиксирована ошибка</string>
     <string name="issue_detected_description_text">Игра обнаружила непредвиденную ошибку и создала отчёт о сбое. Вы можете помочь разработчикам, отправив этот отчёт через почтовый клиент. Если это поддерживается, у Вас будет возможность просмотреть содержимое перед отправкой</string>
+    <string name="special_highlighting_text">Включить специальную подсветку для фигур, заворачивающих на диагональную линию</string>
+    <string name="difficulty_text">Сложность:</string>
+    <string name="board_size_text">Размер доски:</string>
+    <string-array name="difficulty_array">
+        <item>Нормальная</item>
+        <item>Сложная</item>
+        <item>Ощутимо сложная</item>
+    </string-array>
+    <string-array name="board_size_array">
+        <item>6 × 6</item>
+        <item>8 × 8 (стандартный)</item>
+        <item>10 × 10</item>
+    </string-array>
+    <string name="singleplayer_options_title">Параметры одиночной игры</string>
+    <string name="you_text">Вы</string>
 </resources>
