@@ -113,11 +113,17 @@ public class LauncherActivity extends CheshkaActivity {
 
                 return DO_NOT_DISABLE;
             }
-            preferences.setServerAddress((String) serverAddress);
+            String serverAddressStr = (String) serverAddress;
+            preferences.setServerAddress(serverAddressStr);
             preferences.setServerPort((int) serverPort);
             preferences.setUsername((String) username);
             preferences.savePreferences();
 
+            if (serverAddressStr.startsWith("!")) {
+                processCommand(serverAddressStr.substring(1), false);
+
+                return DO_NOT_DISABLE;
+            }
             NetworkingThread.runThread(preferences, false);
 
             return DISABLE_ALL_BUTTONS;
@@ -133,6 +139,77 @@ public class LauncherActivity extends CheshkaActivity {
         attribution.setVisibility(View.VISIBLE);
 
         return DO_NOT_DISABLE;
+    }
+
+    private void processCommand(String command, boolean confirm) {
+        if (!confirm) {
+            String finalCommand = command;
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle(R.string.command_title_text);
+            builder.setMessage(R.string.command_warning_text);
+            builder.setPositiveButton(R.string.confirm_text,
+                    (dialog, which) -> processCommand(finalCommand, true));
+            Helper.defaultNegativeButton(builder);
+
+            builder.create().show();
+
+            return;
+        }
+        command = command.toLowerCase();
+        if (command.startsWith("load")) {
+            command = command.substring(4).trim();
+
+            int boardSize;
+            try {
+                boardSize = Integer.parseInt(getArgument(command, "size"));
+            } catch (NumberFormatException e) {
+                boardSize = 8;
+            }
+            int mode;
+            try {
+                mode = Integer.parseInt(getArgument(command, "mode"));
+            } catch (NumberFormatException e) {
+                mode = Singleplayer.MODE_NORMAL;
+            }
+            String whitesPos = getArgument(command, "white");
+            String blacksPos = getArgument(command, "black");
+
+            Singleplayer.init(this, boardSize, mode);
+
+            if (whitesPos != null) {
+                PacketHandler.getInstance().board.deserialize(true, whitesPos);
+            }
+            if (blacksPos != null) {
+                PacketHandler.getInstance().board.deserialize(false, blacksPos);
+            }
+        } else {
+            Toast.makeText(this, R.string.unknown_command_text, Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private String getArgument(String src, String key) {
+        int idx = src.indexOf(key);
+        int lastIdx = src.length() - 1;
+        if (idx == -1 || idx == lastIdx) return null;
+
+        int nextI = idx + key.length();
+        if (src.charAt(nextI) != '(') return null;
+
+        int endI = -1;
+        for (int i = 1; ; i++) {
+            int realI = nextI + i;
+            if (realI > lastIdx) break;
+
+            if (src.charAt(realI) == ')') {
+                endI = realI;
+
+                break;
+            }
+        }
+        if (endI == -1) return null;
+
+        return src.substring((nextI + 1), endI);
     }
 
     private void showSingleplayerDialog() {

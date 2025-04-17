@@ -74,6 +74,12 @@ public class Board {
             return lastRealPosition;
         }
 
+        public boolean isTurningOntoDiagonalLine(Board board) {
+            computeRealPosition(board);
+
+            return (lastRealPosition == board.getWhitesDiagonalStart());
+        }
+
         @NonNull
         @Override
         public String toString() {

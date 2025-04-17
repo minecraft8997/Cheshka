@@ -99,7 +99,7 @@ public class Singleplayer {
             if (movePieceOnDiagonalIfPossible()) return;
             if (doNotStepPastOpponentsSpawnPointIfEffective()) return;
 
-            makeAnyGoodMove();
+            makeAnyMoveTryToAvoidBadOnes();
         } finally {
             Singleplayer.board = null;
             possibleMoves = null;
@@ -214,7 +214,7 @@ public class Singleplayer {
         return false;
     }
 
-    private static void makeAnyGoodMove() {
+    private static void makeAnyMoveTryToAvoidBadOnes() {
         List<Board.PossibleMove> goodMoves = new ArrayList<>();
         for (Board.PossibleMove move : possibleMoves) {
             int destination = move.getDestination();

@@ -79,7 +79,7 @@
     <string name="resign_title_text">Вы собираетесь признать поражение</string>
     <string name="issue_detected_text">Зафиксирована ошибка</string>
     <string name="issue_detected_description_text">Игра обнаружила непредвиденную ошибку и создала отчёт о сбое. Вы можете помочь разработчикам, отправив этот отчёт через почтовый клиент. Если это поддерживается, у Вас будет возможность просмотреть содержимое перед отправкой</string>
-    <string name="special_highlighting_text">Включить специальную подсветку для фигур, заворачивающих на диагональную линию</string>
+    <string name="special_highlighting_text">Включить специальную подсветку для фигур, направляющихся на диагональную линию</string>
     <string name="difficulty_text">Сложность:</string>
     <string name="board_size_text">Размер доски:</string>
     <string-array name="difficulty_array">
@@ -94,4 +94,7 @@
     </string-array>
     <string name="singleplayer_options_title">Параметры одиночной игры</string>
     <string name="you_text">Вы</string>
+    <string name="command_title_text">Команда</string>
+    <string name="command_warning_text">Сейчас будет выполнена экспериментальная команда. Синтаксические и/или логические ошибки могут привести к аварийному завершению игры. Больше информации: <a href="https://cheshka.deewend.ru/commands-en">https://cheshka.deewend.ru/commands-ru</a></string>
+    <string name="unknown_command_text">Неизвестная команда</string>
 </resources>

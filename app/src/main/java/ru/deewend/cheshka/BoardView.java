@@ -28,6 +28,7 @@ public class BoardView extends CheshkaView {
     private Paint whitePiecePaint;
     private Paint blackPiecePaint;
     private Paint pieceBorderPaint;
+    private Paint redPieceBorderPaint;
     private Paint whitePieceReliefPaint;
     private Paint blackPieceReliefPaint;
     private Paint highlightedCellPaint;
@@ -75,6 +76,7 @@ public class BoardView extends CheshkaView {
             float reliefWidth = borderWidth / 1.25f;
 
             pieceBorderPaint.setStrokeWidth(borderWidth);
+            redPieceBorderPaint.setStrokeWidth(borderWidth);
             whitePieceReliefPaint.setStrokeWidth(reliefWidth);
             blackPieceReliefPaint.setStrokeWidth(reliefWidth);
 
@@ -128,7 +130,8 @@ public class BoardView extends CheshkaView {
 
                     float x = intermediatePoint.x;
                     float y = intermediatePoint.y;
-                    drawPieceAt(canvas, whitePiece, x, y, intermediatePoint.getOpacity());
+                    int opacity = intermediatePoint.getOpacity();
+                    drawPieceAt(canvas, whitePiece, x, y, true, opacity);
                 }
             }
         }
@@ -139,7 +142,8 @@ public class BoardView extends CheshkaView {
 
             int x = renderPos.first;
             int y = renderPos.second;
-            drawPieceAt(canvas, piece.isWhitePiece(), x, y, 255);
+            boolean defaultBorder = !piece.isTurningOntoDiagonalLine(board);
+            drawPieceAt(canvas, piece.isWhitePiece(), x, y, defaultBorder, 255);
 
             if (x != selectedCellX || y != selectedCellY) continue;
             if (piece.isWhitePiece() != handler.whiteColor) continue;
@@ -164,22 +168,25 @@ public class BoardView extends CheshkaView {
         MovementAnimationManager.getInstance().tick();
     }
 
-    private void drawPieceAt(Canvas canvas, boolean whitePiece, float x, float y, int alpha) {
+    private void drawPieceAt(
+            Canvas canvas, boolean whitePiece, float x, float y, boolean defaultBorder, int alpha
+    ) {
         float cx = adjustment + (x * cellSize) + cellSize / 2.0f;
         float cy = adjustment + (y * cellSize) + cellSize / 2.0f;
         Paint piecePaint = (whitePiece ? whitePiecePaint : blackPiecePaint);
         int oldAlpha = piecePaint.getAlpha();
         piecePaint.setAlpha(alpha);
         canvas.drawCircle(cx, cy, pieceRadius, piecePaint);
-        pieceBorderPaint.setAlpha(alpha);
-        canvas.drawCircle(cx, cy, pieceRadius, pieceBorderPaint);
+        Paint borderPaint = (defaultBorder ? pieceBorderPaint : redPieceBorderPaint);
+        borderPaint.setAlpha(alpha);
+        canvas.drawCircle(cx, cy, pieceRadius, borderPaint);
         Paint reliefPaint = (whitePiece ? whitePieceReliefPaint : blackPieceReliefPaint);
         reliefPaint.setAlpha(alpha);
         canvas.drawCircle(cx, cy, relief1Radius, reliefPaint);
         canvas.drawCircle(cx, cy, relief2Radius, reliefPaint);
 
         piecePaint.setAlpha(oldAlpha);
-        pieceBorderPaint.setAlpha(oldAlpha);
+        borderPaint.setAlpha(oldAlpha);
         reliefPaint.setAlpha(oldAlpha);
     }
 
@@ -255,11 +262,13 @@ public class BoardView extends CheshkaView {
             whitePiecePaint = rgbPaint(255, 255, 255);
             blackPiecePaint = rgbPaint(0, 0, 0);
             pieceBorderPaint = rgbPaint(128, 128, 128);
+            redPieceBorderPaint = rgbPaint(255, 0, 0);
             whitePieceReliefPaint = rgbPaint(191, 191, 191); // -64
             blackPieceReliefPaint = rgbPaint(64, 64, 64);
             highlightedCellPaint = argbPaint(192, 255, 255, 0);
 
             pieceBorderPaint.setStyle(Paint.Style.STROKE);
+            redPieceBorderPaint.setStyle(Paint.Style.STROKE);
             whitePieceReliefPaint.setStyle(Paint.Style.STROKE);
             blackPieceReliefPaint.setStyle(Paint.Style.STROKE);
         }

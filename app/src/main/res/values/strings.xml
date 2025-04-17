@@ -97,4 +97,7 @@
     </string-array>
     <string name="singleplayer_options_title">Singleplayer options</string>
     <string name="you_text">You</string>
+    <string name="command_title_text">Command</string>
+    <string name="command_warning_text">You are about to execute a debug command. Syntax and/or logic errors may result in a game crash. Find more at <a href="https://cheshka.deewend.ru/commands-en">https://cheshka.deewend.ru/commands-en</a></string>
+    <string name="unknown_command_text">Unknown command</string>
 </resources>
