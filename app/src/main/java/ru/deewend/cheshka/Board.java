@@ -75,6 +75,8 @@ public class Board {
         }
 
         public boolean isTurningOntoDiagonalLine(Board board) {
+            if (board.getGameState() != GAME_STATE_RUNNING) return false;
+
             computeRealPosition(board);
 
             return (lastRealPosition == board.getWhitesDiagonalStart());
@@ -212,6 +214,8 @@ public class Board {
     private boolean lastChanceActivated;
     private int whitesAutomaticMoveCount;
     private int blacksAutomaticMoveCount;
+    private boolean rolled6NoticeablyHard;
+    private boolean doNotReRoll6NoticeablyHard = true;
 
     public Board(
             boolean clientside,
@@ -242,13 +246,15 @@ public class Board {
 
     public int randomDigit() {
         int digit = trulyRandomDigit();
-        if (PacketHandler.getInstance().singleplayer &&
-                Singleplayer.isNoticeablyHard() && Singleplayer.isPlayersTurn()
-        ) {
+        boolean noticeablyHard =
+                (PacketHandler.getInstance().singleplayer && Singleplayer.isNoticeablyHard());
+        if (noticeablyHard && Singleplayer.isPlayersTurn()) {
             rollDice0(digit);
             boolean rollAgain = false;
             for (PossibleMove move : getPossibleMoves()) {
                 if (move.isSpawningMove() && random.nextInt(4) == 0) {
+                    if (doNotReRoll6NoticeablyHard) continue;
+
                     rollAgain = true;
                 } else if (move.getTarget() != null && random.nextInt(2) == 0) {
                     rollAgain = true;
@@ -265,6 +271,15 @@ public class Board {
              * value is returned and rollDice0 is called, the method will immediately return.
              * This works weird but is exactly what we need.
              */
+
+            /*
+             * Let the player roll 6 just by pure random, but only for the first time.
+             */
+            if (digit == 6) doNotReRoll6NoticeablyHard = false;
+        } else if (noticeablyHard && !rolled6NoticeablyHard) {
+            digit = 6;
+
+            rolled6NoticeablyHard = true;
         }
 
         return digit;

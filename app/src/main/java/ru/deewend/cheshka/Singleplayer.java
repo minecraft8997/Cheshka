@@ -24,9 +24,8 @@ public class Singleplayer {
     }
 
     public static void init(CheshkaActivity context, int boardSize, int mode) {
-        Singleplayer.mode = mode;
-
         PacketHandler handler = PacketHandler.getInstance();
+        Singleplayer.mode = mode;
         handler.singleplayer = true;
         handler.displayName = context.getString(R.string.you_text);
         handler.opponentDisplayName = context.getString(R.string.bot_text);

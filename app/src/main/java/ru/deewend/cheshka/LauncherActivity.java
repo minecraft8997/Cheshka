@@ -160,18 +160,8 @@ public class LauncherActivity extends CheshkaActivity {
         if (command.startsWith("load")) {
             command = command.substring(4).trim();
 
-            int boardSize;
-            try {
-                boardSize = Integer.parseInt(getArgument(command, "size"));
-            } catch (NumberFormatException e) {
-                boardSize = 8;
-            }
-            int mode;
-            try {
-                mode = Integer.parseInt(getArgument(command, "mode"));
-            } catch (NumberFormatException e) {
-                mode = Singleplayer.MODE_NORMAL;
-            }
+            int boardSize = getIntArgument(command, "size", 8);
+            int mode = getIntArgument(command, "mode", Singleplayer.MODE_NORMAL);
             String whitesPos = getArgument(command, "white");
             String blacksPos = getArgument(command, "black");
 
@@ -185,6 +175,14 @@ public class LauncherActivity extends CheshkaActivity {
             }
         } else {
             Toast.makeText(this, R.string.unknown_command_text, Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private int getIntArgument(String src, String key, int defaultValue) {
+        try {
+            return Integer.parseInt(getArgument(src, key));
+        } catch (NumberFormatException e) {
+            return defaultValue;
         }
     }
 
