@@ -170,16 +170,16 @@ public class InGameActivity extends CheshkaActivity {
         );
 
         int secondsForTurn = handler.secondsForTurn;
+        boolean renderingDiceStill = !isDiceRolling();
+        boolean logicalDiceRolled = board.isDiceRolled();
+        boolean noMoves = (logicalDiceRolled && board.getPossibleMoves().isEmpty());
+        if (noMoves && renderingDiceStill) secondsForTurn /= 2;
+
         long deltaSeconds = TimeUnit.MILLISECONDS
                 .toSeconds(System.currentTimeMillis() - board.getLastActionTimestamp());
         long secondsLeft = secondsForTurn - deltaSeconds;
         if (secondsLeft > secondsForTurn) secondsLeft = secondsForTurn;
         if (secondsLeft < 0L) secondsLeft = 0L;
-
-        boolean logicalDiceRolled = board.isDiceRolled();
-        boolean renderingDiceStill = !isDiceRolling();
-        boolean noMoves = (logicalDiceRolled && board.getPossibleMoves().isEmpty());
-        if (noMoves && renderingDiceStill) secondsLeft /= 2L;
 
         int statusResId = (handler.singleplayer ?
                 R.string.singleplayer_game_status_text : R.string.game_status_text);

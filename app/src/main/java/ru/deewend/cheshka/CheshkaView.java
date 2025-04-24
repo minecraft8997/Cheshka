@@ -36,6 +36,22 @@ public abstract class CheshkaView extends View implements Choreographer.FrameCal
         postFrameCallback();
     }
 
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        int widthSize = MeasureSpec.getSize(widthMeasureSpec);
+        int heightSize = MeasureSpec.getSize(heightMeasureSpec);
+        /*
+         * An attempt to fix a rare bug when the board
+         * disappears after the application being idle for a while.
+         */
+        if (widthSize == 0 || heightSize == 0) return;
+
+        onMeasurePx(widthSize, heightSize);
+    }
+
+    protected void onMeasurePx(int widthPx, int heightPx) {
+    }
+
     final void linkActivity(CheshkaActivity activity) {
         this.activity = activity;
     }

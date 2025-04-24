@@ -111,47 +111,6 @@
             android:text="@string/proceed_text" />
 
         <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:text="@string/game_settings_text" />
-
-        <CheckBox
-            android:id="@+id/sounds_checkbox"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:minHeight="48dp"
-            android:text="@string/sounds_checkbox_text" />
-
-        <CheckBox
-            android:id="@+id/timer_checkbox"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:minHeight="48dp"
-            android:text="@string/timer_checkbox_text" />
-
-        <CheckBox
-            android:id="@+id/movement_animation_checkbox"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:minHeight="48dp"
-            android:text="@string/movement_animation_checkbox_text" />
-
-        <CheckBox
-            android:id="@+id/special_highlighting_checkbox"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:minHeight="48dp"
-            android:text="@string/special_highlighting_text" />
-
-        <CheckBox
-            android:id="@+id/eval_bar_checkbox"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:minHeight="48dp"
-            android:text="@string/eval_bar_checkbox_text" />
-
-        <TextView
             android:id="@+id/copyright_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

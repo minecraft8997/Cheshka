@@ -76,7 +76,6 @@
     <string name="timer_checkbox_text">Show playtime</string>
     <string name="movement_animation_checkbox_text">Enable piece movement animation</string>
     <string name="eval_bar_checkbox_text">Enable evaluation bar (beta)</string>
-    <string name="game_settings_text">Game settings (for both Singleplayer and Multiplayer)</string>
     <string name="cancel_text">Cancel</string>
     <string name="confirm_text">Confirm</string>
     <string name="resign_title_text">You are about to resign</string>
@@ -100,4 +99,5 @@
     <string name="command_title_text">Command</string>
     <string name="command_warning_text">You are about to execute a debug command. Syntax and/or logic errors may result in a game crash. Find more at <a href="https://cheshka.deewend.ru/commands-en">https://cheshka.deewend.ru/commands-en</a></string>
     <string name="unknown_command_text">Unknown command</string>
+    <string name="guarantee_12_text">Guarantee rolling a 6 after 12 skipped moves</string>
 </resources>

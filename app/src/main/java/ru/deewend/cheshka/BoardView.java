@@ -244,10 +244,7 @@ public class BoardView extends CheshkaView {
     }
 
     @Override
-    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        int widthSize = MeasureSpec.getSize(widthMeasureSpec);
-        int heightSize = MeasureSpec.getSize(heightMeasureSpec);
-
+    protected void onMeasurePx(int widthSize, int heightSize) {
         size = computeBoardSize(widthSize, heightSize);
         strokeWidthSetFor = 0;
 

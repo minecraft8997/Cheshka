@@ -99,6 +99,8 @@ public abstract class CheshkaActivity extends AppCompatActivity {
     }
 
     protected final void saveButtonsState(Bundle outState) {
+        if (this instanceof InGameActivity) return;
+
         for (int id : buttons) {
             outState.putBoolean("button" + id + "Enabled", findViewById(id).isEnabled());
         }

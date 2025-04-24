@@ -9,38 +9,44 @@
         android:orientation="vertical"
         android:layout_margin="24dp">
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textColor="@color/white"
-            android:text="@string/difficulty_text" />
-
-        <Spinner
-            android:id="@+id/difficulty_spinner"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textColor="@color/white"
-            android:minHeight="48dp" />
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textColor="@color/white"
-            android:text="@string/board_size_text" />
-
-        <Spinner
-            android:id="@+id/board_size_spinner"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textColor="@color/white"
-            android:minHeight="48dp" />
-
         <CheckBox
-            android:id="@+id/guarantee_12"
+            android:id="@+id/sounds_checkbox"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:minHeight="48dp"
             android:textColor="@color/white"
-            android:text="@string/guarantee_12_text" />
+            android:text="@string/sounds_checkbox_text" />
+
+        <CheckBox
+            android:id="@+id/timer_checkbox"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:minHeight="48dp"
+            android:textColor="@color/white"
+            android:text="@string/timer_checkbox_text" />
+
+        <CheckBox
+            android:id="@+id/movement_animation_checkbox"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:minHeight="48dp"
+            android:textColor="@color/white"
+            android:text="@string/movement_animation_checkbox_text" />
+
+        <CheckBox
+            android:id="@+id/special_highlighting_checkbox"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:minHeight="48dp"
+            android:textColor="@color/white"
+            android:text="@string/special_highlighting_text" />
+
+        <CheckBox
+            android:id="@+id/eval_bar_checkbox"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:minHeight="48dp"
+            android:textColor="@color/white"
+            android:text="@string/eval_bar_checkbox_text" />
     </LinearLayout>
 </ScrollView>
