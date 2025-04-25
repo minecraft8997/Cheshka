@@ -71,7 +71,7 @@ public class EvalBarView extends CheshkaView {
         width = boardSize;
         height = (int) (0.015D * boardSize);
 
-        setMeasuredDimension(width, height);
+        setMeasuredDimension0(width, height);
     }
 
     @Override

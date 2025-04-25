@@ -23,7 +23,13 @@ public class Singleplayer {
     private Singleplayer() {
     }
 
-    public static void init(CheshkaActivity context, int boardSize, int mode) {
+    public static void init(
+            CheshkaActivity context,
+            int boardSize,
+            int mode,
+            boolean guaranteeRollOf6,
+            Boolean whiteColor
+    ) {
         PacketHandler handler = PacketHandler.getInstance();
         Singleplayer.mode = mode;
         handler.singleplayer = true;
@@ -32,8 +38,9 @@ public class Singleplayer {
         handler.boardSize = boardSize;
         handler.secondsForTurn = 0;
         handler.noMoveDrawThreshold = NO_MOVE_DRAW_THRESHOLD;
-        handler.whiteColor = handler.random.nextBoolean();
-        whiteColor = !handler.whiteColor;
+        handler.guaranteeRollOf6 = guaranteeRollOf6;
+        handler.whiteColor = (whiteColor == null ? handler.random.nextBoolean() : whiteColor);
+        Singleplayer.whiteColor = !handler.whiteColor;
         handler.instantiateBoard();
 
         Helper.startActivity(context, InGameActivity.class);

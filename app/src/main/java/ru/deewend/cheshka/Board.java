@@ -192,10 +192,16 @@ public class Board {
     public static final byte GAME_STATE_BLACK_WON = 2;
     public static final byte GAME_STATE_DRAW = 3;
 
+    /*
+     * Used only when "guaranteeRollOf6" field is set to true.
+     */
+    public static final int SKIPPED_MOVES_BEFORE_FORCED_ROLL_OF_6 = 10;
+
     private final boolean clientside;
     private final Random random;
     private final long turnWaitingTimeoutMillis;
     private final int noMoveDrawThreshold;
+    private final boolean guaranteeRollOf6;
     private final int diagonalLength;
     private final int whitesDiagonalStart;
     private final int blacksSpawnPosition;
@@ -216,13 +222,16 @@ public class Board {
     private int blacksAutomaticMoveCount;
     private boolean rolled6NoticeablyHard;
     private boolean doNotReRoll6NoticeablyHard = true;
+    private int whitesSkippedMovesGuarantee6;
+    private int blacksSkippedMovesGuarantee6;
 
     public Board(
             boolean clientside,
             Random random,
             int boardSize,
             long turnWaitingTimeoutMillis,
-            int noMoveDrawThreshold
+            int noMoveDrawThreshold,
+            boolean guaranteeRollOf6
     ) {
         if (boardSize <= 0 || boardSize % 2 != 0) {
             throw new IllegalArgumentException("Bad boardSize");
@@ -232,6 +241,7 @@ public class Board {
         this.random = random;
         this.turnWaitingTimeoutMillis = turnWaitingTimeoutMillis;
         this.noMoveDrawThreshold = noMoveDrawThreshold;
+        this.guaranteeRollOf6 = guaranteeRollOf6;
         diagonalLength = boardSize / 2;
         whitesDiagonalStart = (boardSize - 1) * 4;
         blacksSpawnPosition = whitesDiagonalStart / 2;
@@ -280,6 +290,19 @@ public class Board {
             digit = 6;
 
             rolled6NoticeablyHard = true;
+        }
+        if (guaranteeRollOf6) {
+            /*
+             * Expecting noticeablyHard == false (but
+             * allowing modes to be combined with !load command).
+             */
+            int skippedMoves = (whitesTurn ? whitesSkippedMovesGuarantee6 : blacksSkippedMovesGuarantee6);
+            if (skippedMoves >= SKIPPED_MOVES_BEFORE_FORCED_ROLL_OF_6) {
+                if (whitesTurn) whitesSkippedMovesGuarantee6 = 0;
+                else            blacksSkippedMovesGuarantee6 = 0;
+
+                digit = 6;
+            }
         }
 
         return digit;
@@ -592,6 +615,8 @@ public class Board {
             if (noMovesCounter >= noMoveDrawThreshold) {
                 gameState = GAME_STATE_DRAW;
             }
+            if (whitesTurn) whitesSkippedMovesGuarantee6++;
+            else            blacksSkippedMovesGuarantee6++;
         } else {
             if (clientside) {
                 InGameActivity activity = getInGameActivity();
@@ -599,6 +624,8 @@ public class Board {
                 if (activity != null) activity.playMoveSound();
             }
             noMovesCounter = 0;
+            if (whitesTurn) whitesSkippedMovesGuarantee6 = 0;
+            else            blacksSkippedMovesGuarantee6 = 0;
 
             boolean whiteFinished;
             {

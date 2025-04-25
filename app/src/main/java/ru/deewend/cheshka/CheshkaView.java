@@ -15,6 +15,8 @@ public abstract class CheshkaView extends View implements Choreographer.FrameCal
     private final Choreographer choreographer = Choreographer.getInstance();
     private boolean running;
     protected CheshkaActivity activity;
+    private int lastWidth;
+    private int lastHeight;
 
     public CheshkaView(Context context) {
         super(context);
@@ -44,12 +46,23 @@ public abstract class CheshkaView extends View implements Choreographer.FrameCal
          * An attempt to fix a rare bug when the board
          * disappears after the application being idle for a while.
          */
-        if (widthSize == 0 || heightSize == 0) return;
+        if (widthSize == 0 || heightSize == 0) {
+            setMeasuredDimension(lastWidth, lastHeight);
+
+            return;
+        }
 
         onMeasurePx(widthSize, heightSize);
     }
 
     protected void onMeasurePx(int widthPx, int heightPx) {
+    }
+
+    protected void setMeasuredDimension0(int widthPx, int heightPx) {
+        lastWidth = widthPx;
+        lastHeight = heightPx;
+
+        setMeasuredDimension(widthPx, heightPx);
     }
 
     final void linkActivity(CheshkaActivity activity) {

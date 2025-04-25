@@ -96,5 +96,8 @@
     <string name="command_title_text">Команда</string>
     <string name="command_warning_text">Сейчас будет выполнена экспериментальная команда. Синтаксические и/или логические ошибки могут привести к аварийному завершению игры. Больше информации: <a href="https://cheshka.deewend.ru/commands-en">https://cheshka.deewend.ru/commands-ru</a></string>
     <string name="unknown_command_text">Неизвестная команда</string>
-    <string name="guarantee_12_text">Гарантировать выпадение \"шестёрки\" после 12 пропущенных ходов</string>
+    <string name="guarantee_10_text">Гарантировать выпадение \"шестёрки\" после 10 пропущенных ходов</string>
+    <string name="settings_title_text">Настройки</string>
+    <string name="autosave_text">Изменения сохраняются автоматически</string>
+    <string name="close_text">Закрыть</string>
 </resources>

@@ -46,6 +46,7 @@ public class PacketHandler {
     int boardSize;
     int secondsForTurn;
     int noMoveDrawThreshold;
+    boolean guaranteeRollOf6;
     Board board;
     boolean whiteColor;
     boolean myTurnNow; // not updated over time
@@ -290,7 +291,8 @@ public class PacketHandler {
                 random,
                 boardSize,
                 TimeUnit.SECONDS.toMillis(secondsForTurn),
-                noMoveDrawThreshold
+                noMoveDrawThreshold,
+                guaranteeRollOf6
         );
 
         gameStartTimestamp = Math.max(System.currentTimeMillis() - ageMillis, 0L);
@@ -313,6 +315,7 @@ public class PacketHandler {
         opponentDisplayName = null;
         boardSize = 0;
         secondsForTurn = 0;
+        guaranteeRollOf6 = false;
         board = null;
         whiteColor = false;
         myTurnNow = false;

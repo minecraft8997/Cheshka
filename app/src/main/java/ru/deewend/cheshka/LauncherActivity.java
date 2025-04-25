@@ -59,42 +59,6 @@ public class LauncherActivity extends CheshkaActivity {
         restoreButton(R.id.singleplayer_button, savedInstanceState);
         restoreButton(R.id.proceed_button, savedInstanceState);
         restoreButton(R.id.show_assets_attribution_button, savedInstanceState);
-
-        CompoundButton.OnCheckedChangeListener checkBoxListener = (compoundButton, isChecked) -> {
-            int id = compoundButton.getId();
-            if (id == R.id.sounds_checkbox) {
-                preferences.setEnableSounds(isChecked);
-            } else if (id == R.id.timer_checkbox) {
-                preferences.setShowPlaytime(isChecked);
-            } else if (id == R.id.movement_animation_checkbox) {
-                preferences.setEnableMovementAnimation(isChecked);
-            } else if (id == R.id.special_highlighting_checkbox) {
-                preferences.setEnableSpecialHighlighting(isChecked);
-            } else {
-                preferences.setEnableEvalBar(isChecked);
-            }
-
-            preferences.savePreferences();
-        };
-        CheckBox soundsCheckbox = findViewById(R.id.sounds_checkbox);
-        soundsCheckbox.setChecked(preferences.shouldEnableSounds());
-        soundsCheckbox.setOnCheckedChangeListener(checkBoxListener);
-
-        CheckBox timerCheckbox = findViewById(R.id.timer_checkbox);
-        timerCheckbox.setChecked(preferences.shouldShowPlaytime());
-        timerCheckbox.setOnCheckedChangeListener(checkBoxListener);
-
-        CheckBox movementAnimationCheckbox = findViewById(R.id.movement_animation_checkbox);
-        movementAnimationCheckbox.setChecked(preferences.shouldEnableMovementAnimation());
-        movementAnimationCheckbox.setOnCheckedChangeListener(checkBoxListener);
-
-        CheckBox specialHighlightingCheckbox = findViewById(R.id.special_highlighting_checkbox);
-        specialHighlightingCheckbox.setChecked(preferences.shouldEnableSpecialHighlighting());
-        specialHighlightingCheckbox.setOnCheckedChangeListener(checkBoxListener);
-
-        CheckBox evalBarCheckbox = findViewById(R.id.eval_bar_checkbox);
-        evalBarCheckbox.setChecked(preferences.shouldEnableEvalBar());
-        evalBarCheckbox.setOnCheckedChangeListener(checkBoxListener);
     }
 
     @Override
@@ -164,8 +128,17 @@ public class LauncherActivity extends CheshkaActivity {
             int mode = getIntArgument(command, "mode", Singleplayer.MODE_NORMAL);
             String whitesPos = getArgument(command, "white");
             String blacksPos = getArgument(command, "black");
+            //noinspection SpellCheckingInspection
+            boolean guaranteeRollOf6 = command.contains("guaranteerollof6");
 
-            Singleplayer.init(this, boardSize, mode);
+            String color = getArgument(command, "color");
+            if (color == null) color = getArgument(command, "colour");
+            Boolean whiteColor = null;
+            if ("white".equals(color)) whiteColor = Boolean.TRUE;
+            else if ("black".equals(color)) whiteColor = Boolean.FALSE;
+            // else, the color will be chosen randomly
+
+            Singleplayer.init(this, boardSize, mode, guaranteeRollOf6, whiteColor);
 
             if (whitesPos != null) {
                 PacketHandler.getInstance().board.deserialize(true, whitesPos);
@@ -217,9 +190,18 @@ public class LauncherActivity extends CheshkaActivity {
         builder.setPositiveButton(R.string.confirm_text, (dialog, which) -> {
             int boardSize = 6 + boardSizeSelection * 2;
 
-            Singleplayer.init(this, boardSize, difficultySelection);
+            Singleplayer.init(this, boardSize, difficultySelection, false, null);
         });
         Helper.defaultNegativeButton(builder);
+
+        builder.create().show();
+    }
+
+    private void showSettings() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(R.string.settings_title_text);
+        builder.setView(getSettingsView());
+        builder.setNegativeButton(R.string.close_text, null);
 
         builder.create().show();
     }
@@ -231,6 +213,49 @@ public class LauncherActivity extends CheshkaActivity {
                 preferences.getDifficultyDefaultSelection());
         configureSpinner(view.findViewById(R.id.board_size_spinner), R.array.board_size_array,
                 preferences.getBoardSizeDefaultSelection());
+
+        return view;
+    }
+
+    @SuppressLint("InflateParams")
+    private View getSettingsView() {
+        View view = getLayoutInflater().inflate(R.layout.layout_settings, null);
+
+        CompoundButton.OnCheckedChangeListener checkBoxListener = (compoundButton, isChecked) -> {
+            int id = compoundButton.getId();
+            if (id == R.id.sounds_checkbox) {
+                preferences.setEnableSounds(isChecked);
+            } else if (id == R.id.timer_checkbox) {
+                preferences.setShowPlaytime(isChecked);
+            } else if (id == R.id.movement_animation_checkbox) {
+                preferences.setEnableMovementAnimation(isChecked);
+            } else if (id == R.id.special_highlighting_checkbox) {
+                preferences.setEnableSpecialHighlighting(isChecked);
+            } else {
+                preferences.setEnableEvalBar(isChecked);
+            }
+
+            preferences.savePreferences();
+        };
+        CheckBox soundsCheckbox = view.findViewById(R.id.sounds_checkbox);
+        soundsCheckbox.setChecked(preferences.shouldEnableSounds());
+        soundsCheckbox.setOnCheckedChangeListener(checkBoxListener);
+
+        CheckBox timerCheckbox = view.findViewById(R.id.timer_checkbox);
+        timerCheckbox.setChecked(preferences.shouldShowPlaytime());
+        timerCheckbox.setOnCheckedChangeListener(checkBoxListener);
+
+        CheckBox movementAnimationCheckbox = view.findViewById(R.id.movement_animation_checkbox);
+        movementAnimationCheckbox.setChecked(preferences.shouldEnableMovementAnimation());
+        movementAnimationCheckbox.setOnCheckedChangeListener(checkBoxListener);
+
+        CheckBox specialHighlightingCheckbox = view.findViewById(R.id.special_highlighting_checkbox);
+        specialHighlightingCheckbox.setChecked(preferences.shouldEnableSpecialHighlighting());
+        specialHighlightingCheckbox.setOnCheckedChangeListener(checkBoxListener);
+
+        CheckBox evalBarCheckbox = view.findViewById(R.id.eval_bar_checkbox);
+        evalBarCheckbox.setChecked(preferences.shouldEnableEvalBar());
+        evalBarCheckbox.setOnCheckedChangeListener(checkBoxListener);
 
         return view;
     }

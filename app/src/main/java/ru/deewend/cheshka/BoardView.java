@@ -248,7 +248,7 @@ public class BoardView extends CheshkaView {
         size = computeBoardSize(widthSize, heightSize);
         strokeWidthSetFor = 0;
 
-        setMeasuredDimension(size, size);
+        setMeasuredDimension0(size, size);
     }
 
     @Override

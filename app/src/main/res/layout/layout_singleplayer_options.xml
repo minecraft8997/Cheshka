@@ -36,11 +36,11 @@
             android:minHeight="48dp" />
 
         <CheckBox
-            android:id="@+id/guarantee_12"
+            android:id="@+id/guarantee_10"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:minHeight="48dp"
             android:textColor="@color/white"
-            android:text="@string/guarantee_12_text" />
+            android:text="@string/guarantee_10_text" />
     </LinearLayout>
 </ScrollView>
