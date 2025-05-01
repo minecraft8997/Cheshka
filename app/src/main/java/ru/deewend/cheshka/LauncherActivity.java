@@ -228,6 +228,10 @@ public class LauncherActivity extends CheshkaActivity {
             int boardSize = 6 + boardSizeSelection * 2;
             boolean guaranteeRollOf6 = preferences.shouldGuaranteeRollOf6();
 
+            if (difficultySelection == Singleplayer.MODE_NOTICEABLY_HARD && guaranteeRollOf6) {
+                return; // fixme
+            }
+
             Singleplayer.init(
                     this, boardSize, difficultySelection, guaranteeRollOf6, null
             );

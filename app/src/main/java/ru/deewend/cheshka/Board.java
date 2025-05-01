@@ -195,7 +195,7 @@ public class Board {
     /*
      * Used only when "guaranteeRollOf6" field is set to true.
      */
-    public static final int SKIPPED_MOVES_BEFORE_FORCED_ROLL_OF_6 = 10;
+    public static final int SKIPPED_MOVES_BEFORE_FORCED_ROLL_OF_6 = 3;
 
     private final boolean clientside;
     private final Random random;
@@ -257,6 +257,7 @@ public class Board {
 
     public int randomDigit() {
         int digit = trulyRandomDigit();
+        digit = 1;
         boolean noticeablyHard =
                 (PacketHandler.getInstance().singleplayer && Singleplayer.isNoticeablyHard());
         if (noticeablyHard && Singleplayer.isPlayersTurn()) {
@@ -303,6 +304,7 @@ public class Board {
                 else            blacksSkippedMovesGuarantee6 = 0;
 
                 digit = 6;
+                lastDiceRollResult = null;
             }
         }
 
