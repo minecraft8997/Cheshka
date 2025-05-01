@@ -101,8 +101,9 @@ public class Singleplayer {
              * could potentially result in an NPE since they don't count possibility
              * of move.getPiece() being null if it's a spawning move. Is it worth fixing?
              */
-            if (leaveSpawnPointIfPossible()) return;
             if (movePieceOnDiagonalIfPossible()) return;
+            if (leaveSpawnPointIfPossible()) return;
+            if (movePieceWithinDiagonalIfPossible()) return;
             if (doNotStepPastOpponentsSpawnPointIfEffective()) return;
 
             makeAnyMoveTryToAvoidBadOnes();
@@ -144,6 +145,26 @@ public class Singleplayer {
         return false;
     }
 
+    private static boolean movePieceOnDiagonalIfPossible() {
+        Board.PossibleMove goodMove = null;
+        for (Board.PossibleMove move : possibleMoves) {
+            int position = move.getPiece().getPosition();
+            int destination = move.getDestination();
+            int whitesDiagonalStart = board.getWhitesDiagonalStart();
+            if (position <= whitesDiagonalStart && destination > whitesDiagonalStart) {
+                /*
+                 * Board#blacksDiagonalStartPlusOne is always greater than
+                 * whitesDiagonalStart, so we're free to perform the comparison above.
+                 */
+                goodMove = move;
+
+                break;
+            }
+        }
+
+        return makeMoveIfPresent(goodMove);
+    }
+
     private static boolean leaveSpawnPointIfPossible() {
         Board.PossibleMove goodMove = null;
         for (Board.PossibleMove move : possibleMoves) {
@@ -161,7 +182,7 @@ public class Singleplayer {
         return makeMoveIfPresent(goodMove);
     }
 
-    private static boolean movePieceOnDiagonalIfPossible() {
+    private static boolean movePieceWithinDiagonalIfPossible() {
         Board.PossibleMove goodMove = null;
         for (Board.PossibleMove move : possibleMoves) {
             Board.Piece piece = move.getPiece();

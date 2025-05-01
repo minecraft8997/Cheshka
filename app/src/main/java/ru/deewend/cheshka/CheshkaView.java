@@ -65,8 +65,8 @@ public abstract class CheshkaView extends View implements Choreographer.FrameCal
         setMeasuredDimension(widthPx, heightPx);
     }
 
-    final void linkActivity(CheshkaActivity activity) {
-        this.activity = activity;
+    final void linkActivity() {
+        this.activity = (CheshkaActivity) getContext();
     }
 
     public void initialize() {

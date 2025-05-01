@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_margin="24dp">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:labelFor="@id/server_address_field"
+            android:textColor="@color/white"
+            android:text="@string/server_address_text" />
+
+        <EditText
+            android:id="@+id/server_address_field"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:minHeight="48dp"
+            android:autofillHints=""
+            android:inputType="text"
+            android:text="@string/server_address_example"
+            android:hint="@string/server_address_example" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:labelFor="@id/server_port_field"
+            android:textColor="@color/white"
+            android:text="@string/server_port_text" />
+
+        <EditText
+            android:id="@+id/server_port_field"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:minHeight="48dp"
+            android:autofillHints=""
+            android:inputType="number"
+            android:text="@string/server_port_example"
+            android:hint="@string/server_port_example" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:labelFor="@id/server_port_field"
+            android:textColor="@color/white"
+            android:text="@string/username_text" />
+
+        <EditText
+            android:id="@+id/username_field"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:minHeight="48dp"
+            android:autofillHints="username"
+            android:inputType="text"
+            android:hint="@string/username_example" />
+
+        <Button
+            android:id="@+id/proceed_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/proceed_text" />
+    </LinearLayout>
+</ScrollView>

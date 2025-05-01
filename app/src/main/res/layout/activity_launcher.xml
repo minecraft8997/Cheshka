@@ -16,34 +16,20 @@
             android:layout_height="wrap_content"
             android:adjustViewBounds="true"
             android:contentDescription="@string/game_logo_text"
-            android:src="@drawable/cheshka_logo_beta"
+            android:src="@drawable/cheshka_logo"
             android:layout_marginBottom="12dp" />
 
         <!-- Should be displayed only in landscape mode. -->
-        <LinearLayout
+        <TextView
             android:id="@+id/game_text_logo"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="12dp"
-            android:orientation="horizontal"
-            android:gravity="center">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/app_name"
-                android:fontFamily="sans-serif"
-                android:textColor="@color/white"
-                android:textSize="48sp" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/beta_text"
-                android:fontFamily="sans-serif"
-                android:textColor="@color/white"
-                android:textSize="16sp" />
-        </LinearLayout>
+            android:text="@string/app_name"
+            android:fontFamily="sans-serif"
+            android:textColor="@color/white"
+            android:textSize="48sp"
+            android:gravity="center"
+            android:layout_marginBottom="12dp" />
 
         <Button
             android:id="@+id/singleplayer_button"
@@ -51,69 +37,49 @@
             android:layout_height="wrap_content"
             android:text="@string/singleplayer_text" />
 
-        <TextView
+        <Button
+            android:id="@+id/multiplayer_button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="center"
-            android:text="@string/or_text" />
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:labelFor="@id/server_address_field"
-            android:text="@string/server_address_text" />
-
-        <EditText
-            android:id="@+id/server_address_field"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:minHeight="48dp"
-            android:autofillHints=""
-            android:inputType="text"
-            android:text="@string/server_address_example"
-            android:hint="@string/server_address_example" />
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:labelFor="@id/server_port_field"
-            android:text="@string/server_port_text" />
-
-        <EditText
-            android:id="@+id/server_port_field"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:minHeight="48dp"
-            android:autofillHints=""
-            android:inputType="number"
-            android:text="@string/server_port_example"
-            android:hint="@string/server_port_example" />
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:labelFor="@id/server_port_field"
-            android:text="@string/username_text" />
-
-        <EditText
-            android:id="@+id/username_field"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:minHeight="48dp"
-            android:autofillHints="username"
-            android:inputType="text"
-            android:hint="@string/username_example" />
+            android:text="@string/multiplayer_text" />
 
         <Button
-            android:id="@+id/proceed_button"
+            android:id="@+id/settings_button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/proceed_text" />
+            android:text="@string/settings_text" />
+
+        <TextView
+            android:id="@+id/cmd_dispatcher_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:labelFor="@id/command_field"
+            android:gravity="center"
+            android:text="@string/cmd_dispatcher_text"
+            android:visibility="gone" />
+
+        <EditText
+            android:id="@+id/command_field"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:minHeight="48dp"
+            android:autofillHints=""
+            android:inputType="text"
+            android:hint="@string/command_example"
+            android:visibility="gone" />
+
+        <Button
+            android:id="@+id/execute_command_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/execute_command_text"
+            android:visibility="gone" />
 
         <TextView
             android:id="@+id/copyright_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
             android:gravity="center" />
 
         <Button

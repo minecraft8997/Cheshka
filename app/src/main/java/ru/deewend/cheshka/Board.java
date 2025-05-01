@@ -207,6 +207,7 @@ public class Board {
     private final int blacksSpawnPosition;
     private final int blacksDiagonalStartPlusOne;
     private final List<Piece> pieces = new ArrayList<>();
+    private boolean allowVaults;
     private int moveNumber = 1;
     private int subMoveNumber = 1;
     private boolean whitesTurn = true;
@@ -530,7 +531,11 @@ public class Board {
                 boolean guestOnWhiteSide = (newPosition == whitesDiagonalStart && aPiece.position == 0);
                 boolean waitingWhitePiece = (newPosition == 0 && aPiece.position == whitesDiagonalStart);
                 if (aPiece.position == newPosition || guestOnWhiteSide || waitingWhitePiece) {
-                    if (i != digit) return false;
+                    if (i != digit) {
+                        if (allowVaults) continue;
+
+                        return false;
+                    }
 
                     return aPiece.whitePiece != whitesTurn;
                 }
@@ -788,6 +793,10 @@ public class Board {
         return blacksAutomaticMoveCount;
     }
 
+    public void setAllowVaults(boolean allowVaults) {
+        this.allowVaults = allowVaults;
+    }
+
     public void setMoveNumber(int moveNumber) {
         this.moveNumber = moveNumber;
     }
@@ -811,11 +820,13 @@ public class Board {
         String result = "Board{" +
                 "turnWaitingTimeoutMillis=" + turnWaitingTimeoutMillis +
                 ", noMoveDrawThreshold=" + noMoveDrawThreshold +
+                ", guaranteeRollOf6=" + guaranteeRollOf6 +
                 ", diagonalLength=" + diagonalLength +
                 ", whitesDiagonalStart=" + whitesDiagonalStart +
                 ", blacksSpawnPosition=" + blacksSpawnPosition +
                 ", blacksDiagonalStartPlusOne=" + blacksDiagonalStartPlusOne +
                 ", pieces=" + Helper.listToString(pieces) +
+                ", allowVaults=" + allowVaults +
                 ", moveNumber=" + moveNumber +
                 ", subMoveNumber=" + subMoveNumber +
                 ", whitesTurn=" + whitesTurn +
@@ -834,6 +845,10 @@ public class Board {
                 ", lastChanceActivated=" + lastChanceActivated +
                 ", whitesAutomaticMoveCount=" + whitesAutomaticMoveCount +
                 ", blacksAutomaticMoveCount=" + blacksAutomaticMoveCount +
+                ", rolled6NoticeablyHard=" + rolled6NoticeablyHard +
+                ", doNotReRoll6NoticeablyHard=" + doNotReRoll6NoticeablyHard +
+                ", whitesSkippedMovesGuarantee6=" + whitesSkippedMovesGuarantee6 +
+                ", blacksSkippedMovesGuarantee6=" + blacksSkippedMovesGuarantee6 +
                 '}';
 
         return result;

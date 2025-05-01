@@ -59,7 +59,7 @@ public abstract class CheshkaActivity extends AppCompatActivity {
         for (int resId : viewResIds) {
             CheshkaView view = findViewById(resId);
 
-            view.linkActivity(this);
+            view.linkActivity();
             view.setRunning(true);
         }
     }
@@ -76,18 +76,23 @@ public abstract class CheshkaActivity extends AppCompatActivity {
         button.setOnClickListener((v) -> {
             byte toDo = onClick(id, button);
             if (toDo > DO_NOT_DISABLE) {
-                List<Integer> buttons = (toDo ==
-                        DISABLE_CURRENT_BUTTON ? Helper.singleElementList(id) : this.buttons);
-                for (int buttonId : buttons) {
-                    Button layoutButton = findViewById(buttonId);
-                    layoutButton.setEnabled(false);
-
-                    askToWait(layoutButton);
-                }
+                if (toDo == DISABLE_CURRENT_BUTTON) lockButton(id);
+                else                                lockAllButtons();
             }
         });
 
         buttons.add(id);
+    }
+
+    public final void lockAllButtons() {
+        for (int buttonId : buttons) lockButton(buttonId);
+    }
+
+    private void lockButton(int buttonId) {
+        Button layoutButton = findViewById(buttonId);
+        layoutButton.setEnabled(false);
+
+        askToWait(layoutButton);
     }
 
     private void askToWait(Button button) {

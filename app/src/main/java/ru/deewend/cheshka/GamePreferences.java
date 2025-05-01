@@ -23,6 +23,8 @@ public class GamePreferences {
     private boolean enableEvalBar;
     private int difficultyDefaultSelection;
     private int boardSizeDefaultSelection;
+    private boolean guaranteeRollOf6;
+    private String lastCommand;
 
     private int latestLoadHashCode = hashCode();
 
@@ -44,6 +46,8 @@ public class GamePreferences {
         enableEvalBar = preferences.getBoolean("enableEvalBar", false);
         difficultyDefaultSelection = preferences.getInt("difficultyDefaultSelection", 0);
         boardSizeDefaultSelection = preferences.getInt("boardSizeDefaultSelection", 1);
+        guaranteeRollOf6 = preferences.getBoolean("guaranteeRollOf6", false);
+        lastCommand = preferences.getString("lastCommand", DEFAULT_STRING_VALUE);
 
         latestLoadHashCode = hashCode();
     }
@@ -63,6 +67,8 @@ public class GamePreferences {
         editor.putBoolean("enableEvalBar", enableEvalBar);
         editor.putInt("difficultyDefaultSelection", difficultyDefaultSelection);
         editor.putInt("boardSizeDefaultSelection", boardSizeDefaultSelection);
+        editor.putBoolean("guaranteeRollOf6", guaranteeRollOf6);
+        editor.putString("lastCommand", lastCommand);
         editor.apply();
     }
 
@@ -118,6 +124,14 @@ public class GamePreferences {
         return boardSizeDefaultSelection;
     }
 
+    public boolean shouldGuaranteeRollOf6() {
+        return guaranteeRollOf6;
+    }
+
+    public String getLastCommand() {
+        return lastCommand;
+    }
+
     public void setServerAddress(String serverAddress) {
         this.serverAddress = serverAddress;
     }
@@ -162,6 +176,14 @@ public class GamePreferences {
         this.boardSizeDefaultSelection = boardSizeDefaultSelection;
     }
 
+    public void setGuaranteeRollOf6(boolean guaranteeRollOf6) {
+        this.guaranteeRollOf6 = guaranteeRollOf6;
+    }
+
+    public void setLastCommand(String lastCommand) {
+        this.lastCommand = lastCommand;
+    }
+
     @Override
     public int hashCode() {
         return Objects.hash(
@@ -175,7 +197,9 @@ public class GamePreferences {
                 enableSpecialHighlighting,
                 enableEvalBar,
                 difficultyDefaultSelection,
-                boardSizeDefaultSelection
+                boardSizeDefaultSelection,
+                guaranteeRollOf6,
+                lastCommand
         );
     }
 }

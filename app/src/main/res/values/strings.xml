@@ -97,10 +97,15 @@
     <string name="singleplayer_options_title">Singleplayer options</string>
     <string name="you_text">You</string>
     <string name="command_title_text">Command</string>
-    <string name="command_warning_text">You are about to execute a debug command. Syntax and/or logic errors may result in a game crash. Find more at <a href="https://cheshka.deewend.ru/commands-en">https://cheshka.deewend.ru/commands-en</a></string>
+    <string name="command_warning_text">Debug commands are an experimental feature. Syntax and/or logic errors may result in a game crash</string>
     <string name="unknown_command_text">Unknown command</string>
     <string name="guarantee_10_text">Guarantee rolling a 6 after 10 skipped moves</string>
-    <string name="settings_title_text">Settings</string>
+    <string name="settings_text">Settings</string>
     <string name="autosave_text">Changes are saved automatically</string>
     <string name="close_text">Close</string>
+    <string name="multiplayer_text">Multiplayer</string>
+    <string name="cmd_dispatcher_text">Experimental command dispatcher (<a href="https://cheshka.deewend.ru/commands-en">more info</a>)</string>
+    <string name="command_example" translatable="false">!load size(12) white(0 1 2)</string>
+    <string name="execute_command_text">Execute command</string>
+    <string name="cmd_should_start_with">Commands should start with \'!\' symbol</string>
 </resources>

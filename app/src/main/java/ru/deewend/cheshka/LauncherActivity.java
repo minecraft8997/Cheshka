@@ -20,9 +20,17 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 
 public class LauncherActivity extends CheshkaActivity {
+    public static final long TOUCH_MAX_DELTA = 1000L;
+    public static final int TOUCHES_NEEDED_TO_SHOW_COMMAND_DISPATCHER = 5;
+
+    private static boolean showCommandMenuAutomatically;
+
     private GamePreferences preferences;
     private int difficultySelection;
     private int boardSizeSelection;
+    private int touchCount;
+    private long lastTouchTimestamp;
+    private boolean shownCommandMenu;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -46,19 +54,50 @@ public class LauncherActivity extends CheshkaActivity {
         ((TextView) findViewById(R.id.links_view))
                 .setMovementMethod(LinkMovementMethod.getInstance());
 
-        if (preferences.isServerSpecified()) {
-            ((EditText) findViewById(R.id.server_address_field))
-                    .setText(preferences.getServerAddress());
-            ((EditText) findViewById(R.id.server_port_field))
-                    .setText(String.valueOf(preferences.getServerPort()));
-        }
-        if (preferences.hasCredentials()) {
-            ((EditText) findViewById(R.id.username_field)).setText(preferences.getUsername());
-        }
-
         restoreButton(R.id.singleplayer_button, savedInstanceState);
-        restoreButton(R.id.proceed_button, savedInstanceState);
+        restoreButton(R.id.multiplayer_button, savedInstanceState);
+        restoreButton(R.id.settings_button, savedInstanceState);
+        restoreButton(R.id.execute_command_button, savedInstanceState);
         restoreButton(R.id.show_assets_attribution_button, savedInstanceState);
+
+        if (showCommandMenuAutomatically) {
+            showCommandMenu();
+
+            return;
+        }
+        int logoId = (toHide == R.id.game_image_logo ? R.id.game_text_logo : R.id.game_image_logo);
+        findViewById(logoId).setOnTouchListener((v, e) -> {
+            v.performClick();
+
+            long currentTime = System.currentTimeMillis();
+            if (currentTime - lastTouchTimestamp > TOUCH_MAX_DELTA) {
+                touchCount = 0;
+            }
+            touchCount++;
+            lastTouchTimestamp = currentTime;
+            if (touchCount >= TOUCHES_NEEDED_TO_SHOW_COMMAND_DISPATCHER) {
+                touchCount = 0;
+
+                showCommandMenu();
+            }
+
+            return false;
+        });
+    }
+
+    private void showCommandMenu() {
+        if (shownCommandMenu) return;
+
+        TextView dispatcherTitle = findViewById(R.id.cmd_dispatcher_title);
+        dispatcherTitle.setMovementMethod(LinkMovementMethod.getInstance());
+        dispatcherTitle.setVisibility(View.VISIBLE);
+        EditText commandField = findViewById(R.id.command_field);
+        commandField.setText(preferences.getLastCommand());
+        commandField.setVisibility(View.VISIBLE);
+        findViewById(R.id.execute_command_button).setVisibility(View.VISIBLE);
+
+        shownCommandMenu = true;
+        showCommandMenuAutomatically = true;
     }
 
     @Override
@@ -68,29 +107,27 @@ public class LauncherActivity extends CheshkaActivity {
 
             return DO_NOT_DISABLE;
         }
-        if (id == R.id.proceed_button) {
-            Object serverAddress = getEditTextValue(R.id.server_address_field, true);
-            Object serverPort = getEditTextValue(R.id.server_port_field, false);
-            Object username = getEditTextValue(R.id.username_field, true);
-            if (checkBadValue(serverAddress, serverPort, username)) {
-                Toast.makeText(this, R.string.bad_integer_text, Toast.LENGTH_SHORT).show();
+        if (id == R.id.multiplayer_button) {
+            showMultiplayerDialog();
 
-                return DO_NOT_DISABLE;
-            }
-            String serverAddressStr = (String) serverAddress;
-            preferences.setServerAddress(serverAddressStr);
-            preferences.setServerPort((int) serverPort);
-            preferences.setUsername((String) username);
+            return DO_NOT_DISABLE;
+        }
+        if (id == R.id.settings_button) {
+            showSettingsDialog();
+
+            return DO_NOT_DISABLE;
+        }
+        if (id == R.id.execute_command_button) {
+            String command = (String) getEditTextValue(R.id.command_field, true);
+            preferences.setLastCommand(command);
             preferences.savePreferences();
-
-            if (serverAddressStr.startsWith("!")) {
-                processCommand(serverAddressStr.substring(1), false);
-
-                return DO_NOT_DISABLE;
+            if (command.startsWith("!")) {
+                processCommand(command.substring(1), false);
+            } else {
+                Toast.makeText(this, R.string.cmd_should_start_with, Toast.LENGTH_SHORT).show();
             }
-            NetworkingThread.runThread(preferences, false);
 
-            return DISABLE_ALL_BUTTONS;
+            return DO_NOT_DISABLE;
         }
         button.setVisibility(View.GONE);
         findViewById(R.id.attribution_title_text).setVisibility(View.VISIBLE);
@@ -130,6 +167,8 @@ public class LauncherActivity extends CheshkaActivity {
             String blacksPos = getArgument(command, "black");
             //noinspection SpellCheckingInspection
             boolean guaranteeRollOf6 = command.contains("guaranteerollof6");
+            //noinspection SpellCheckingInspection
+            boolean allowVaults = command.contains("allowvaults");
 
             String color = getArgument(command, "color");
             if (color == null) color = getArgument(command, "colour");
@@ -140,12 +179,10 @@ public class LauncherActivity extends CheshkaActivity {
 
             Singleplayer.init(this, boardSize, mode, guaranteeRollOf6, whiteColor);
 
-            if (whitesPos != null) {
-                PacketHandler.getInstance().board.deserialize(true, whitesPos);
-            }
-            if (blacksPos != null) {
-                PacketHandler.getInstance().board.deserialize(false, blacksPos);
-            }
+            Board board = PacketHandler.getInstance().board;
+            if (whitesPos != null) board.deserialize(true, whitesPos);
+            if (blacksPos != null) board.deserialize(false, blacksPos);
+            board.setAllowVaults(allowVaults);
         } else {
             Toast.makeText(this, R.string.unknown_command_text, Toast.LENGTH_SHORT).show();
         }
@@ -189,17 +226,29 @@ public class LauncherActivity extends CheshkaActivity {
         builder.setView(getSingleplayerOptionsView());
         builder.setPositiveButton(R.string.confirm_text, (dialog, which) -> {
             int boardSize = 6 + boardSizeSelection * 2;
+            boolean guaranteeRollOf6 = preferences.shouldGuaranteeRollOf6();
 
-            Singleplayer.init(this, boardSize, difficultySelection, false, null);
+            Singleplayer.init(
+                    this, boardSize, difficultySelection, guaranteeRollOf6, null
+            );
         });
         Helper.defaultNegativeButton(builder);
 
         builder.create().show();
     }
 
-    private void showSettings() {
+    private void showMultiplayerDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle(R.string.settings_title_text);
+        builder.setTitle(R.string.multiplayer_text);
+        builder.setView(getMultiplayerOptionsView());
+        Helper.defaultNegativeButton(builder);
+
+        builder.create().show();
+    }
+
+    private void showSettingsDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(R.string.settings_text);
         builder.setView(getSettingsView());
         builder.setNegativeButton(R.string.close_text, null);
 
@@ -213,6 +262,49 @@ public class LauncherActivity extends CheshkaActivity {
                 preferences.getDifficultyDefaultSelection());
         configureSpinner(view.findViewById(R.id.board_size_spinner), R.array.board_size_array,
                 preferences.getBoardSizeDefaultSelection());
+        CheckBox guarantee10 = view.findViewById(R.id.guarantee_10);
+        guarantee10.setChecked(preferences.shouldGuaranteeRollOf6());
+        guarantee10.setOnCheckedChangeListener((checkbox, isChecked) -> {
+            preferences.setGuaranteeRollOf6(isChecked);
+            preferences.savePreferences();
+        });
+
+        return view;
+    }
+
+    @SuppressLint("InflateParams")
+    private View getMultiplayerOptionsView() {
+        View view = getLayoutInflater().inflate(R.layout.layout_multiplayer_options, null);
+        if (preferences.isServerSpecified()) {
+            ((EditText) view.findViewById(R.id.server_address_field))
+                    .setText(preferences.getServerAddress());
+            ((EditText) view.findViewById(R.id.server_port_field))
+                    .setText(String.valueOf(preferences.getServerPort()));
+        }
+        if (preferences.hasCredentials()) {
+            ((EditText) view.findViewById(R.id.username_field)).setText(preferences.getUsername());
+        }
+        view.findViewById(R.id.proceed_button).setOnClickListener((v) -> {
+            Object serverAddress = getEditTextValue(view, R.id.server_address_field, true);
+            Object serverPort = getEditTextValue(view, R.id.server_port_field, false);
+            if (checkBadValue(serverPort)) {
+                Toast.makeText(this, R.string.bad_integer_text, Toast.LENGTH_SHORT).show();
+
+                return;
+            }
+            Object username = getEditTextValue(view, R.id.username_field, true);
+
+            String serverAddressStr = (String) serverAddress;
+            preferences.setServerAddress(serverAddressStr);
+            preferences.setServerPort((int) serverPort);
+            preferences.setUsername((String) username);
+            preferences.savePreferences();
+
+            NetworkingThread.runThread(preferences, false);
+
+            lockAllButtons();
+            v.setEnabled(false);
+        });
 
         return view;
     }
@@ -221,8 +313,8 @@ public class LauncherActivity extends CheshkaActivity {
     private View getSettingsView() {
         View view = getLayoutInflater().inflate(R.layout.layout_settings, null);
 
-        CompoundButton.OnCheckedChangeListener checkBoxListener = (compoundButton, isChecked) -> {
-            int id = compoundButton.getId();
+        CompoundButton.OnCheckedChangeListener checkBoxListener = (checkbox, isChecked) -> {
+            int id = checkbox.getId();
             if (id == R.id.sounds_checkbox) {
                 preferences.setEnableSounds(isChecked);
             } else if (id == R.id.timer_checkbox) {
@@ -294,8 +386,13 @@ public class LauncherActivity extends CheshkaActivity {
         preferences.savePreferences();
     }
 
+    /** @noinspection SameParameterValue*/
     private Object getEditTextValue(int resId, boolean string) {
-        String stringValue = Helper.getEditTextStringValue(this, resId);
+        return getEditTextValue(this, resId, string);
+    }
+
+    private Object getEditTextValue(Object from, int resId, boolean string) {
+        String stringValue = Helper.getEditTextStringValue(from, resId);
         if (string) return stringValue;
 
         int intValue;

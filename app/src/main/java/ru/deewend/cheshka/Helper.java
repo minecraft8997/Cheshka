@@ -1,5 +1,6 @@
 package ru.deewend.cheshka;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -8,6 +9,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.text.Editable;
+import android.view.View;
 import android.widget.EditText;
 
 import androidx.appcompat.app.AlertDialog;
@@ -89,8 +91,14 @@ public class Helper {
         current.startActivity(intent);
     }
 
-    public static String getEditTextStringValue(CheshkaActivity activity, int resId) {
-        Editable text = ((EditText) activity.findViewById(resId)).getText();
+    public static String getEditTextStringValue(Object from, int resId) {
+        View v;
+        if (from instanceof Activity) {
+            v = ((Activity) from).findViewById(resId);
+        } else {
+            v = ((View) from).findViewById(resId);
+        }
+        Editable text = ((EditText) v).getText();
 
         return (text != null ? text.toString().trim() : Helper.DEFAULT_STRING_VALUE);
     }
@@ -194,13 +202,6 @@ public class Helper {
         }
 
         return clazz.getName();
-    }
-
-    public static <T> List<T> singleElementList(T element) {
-        List<T> result = new ArrayList<>();
-        result.add(element);
-
-        return result;
     }
 
     public static String calculatedTimeElapsed(long elapsedMillis) {
