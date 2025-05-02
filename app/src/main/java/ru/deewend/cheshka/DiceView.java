@@ -6,20 +6,15 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Rect;
 import android.util.AttributeSet;
-import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Properties;
 
 public class DiceView extends CheshkaView {
-    public static final String TAG = DiceView.class.getName();
-
     public static final String DICE_ATLAS_FILENAME = "dicerolls.png";
-    public static final String ROWS_PROPERTIES_FILENAME = "rows.properties";
     public static final int SPRITE_COUNT_X = 16;
     public static final int SPRITE_COUNT_Y = 7;
     public static final int LAST_FRAME = SPRITE_COUNT_X - 1;
@@ -27,9 +22,6 @@ public class DiceView extends CheshkaView {
     public static final byte MODE_IDLE = 0;
     public static final byte MODE_THINKING = 1;
     public static final byte MODE_ROLLING_EXACT_DIGIT = 2;
-
-    private static final int[] ROWS = new int[SPRITE_COUNT_Y];
-    private static boolean rowsPropertiesRead;
 
     private static byte diceMode;
     private static int diceDigit;
@@ -40,7 +32,6 @@ public class DiceView extends CheshkaView {
     private int height;
     private Rect atlasRect;
     private Rect canvasRect;
-    private Properties properties;
 
     public DiceView(Context context) {
         super(context);
@@ -72,7 +63,7 @@ public class DiceView extends CheshkaView {
                 throw new IllegalStateException("Unknown mode: " + mode);
             }
             atlasRect.left = frame * width;
-            atlasRect.top = ROWS[digit] * height;
+            atlasRect.top = digit * height;
             atlasRect.right = atlasRect.left + width;
             atlasRect.bottom = atlasRect.top + height;
 
@@ -111,43 +102,6 @@ public class DiceView extends CheshkaView {
 
         atlasRect = new Rect();
         canvasRect = new Rect();
-
-        if (!rowsPropertiesRead) {
-            properties = new Properties();
-            try (InputStream stream = Helper.openFile(activity, ROWS_PROPERTIES_FILENAME)) {
-                properties.load(stream);
-            } catch (IOException e) {
-                Log.w(TAG, "I/O issue when reading " + ROWS_PROPERTIES_FILENAME, e);
-            }
-            ROWS[0] = getInt("rowThinking", 6);
-            ROWS[1] = getInt("row1", 0);
-            ROWS[2] = getInt("row2", 3);
-            ROWS[3] = getInt("row3", 4);
-            ROWS[4] = getInt("row4", 5);
-            ROWS[5] = getInt("row5", 1);
-            ROWS[6] = getInt("row6", 2);
-            properties = null;
-
-            rowsPropertiesRead = true;
-        }
-    }
-
-    private int getInt(String key, int defaultValue) {
-        String result = properties.getProperty(key, Helper.DEFAULT_STRING_VALUE);
-        if (result.equals(Helper.DEFAULT_STRING_VALUE)) {
-            return defaultValue;
-        }
-        int parsedResult;
-        try {
-            parsedResult = Integer.parseInt(result);
-        } catch (NumberFormatException e) {
-            Log.w(TAG, "Bad value of key \"" + key + "\" in " +
-                    ROWS_PROPERTIES_FILENAME + ": " + result + ". Defaulting to " + defaultValue);
-
-            return defaultValue;
-        }
-
-        return parsedResult;
     }
 
     public static void setDigit(int digit) {
