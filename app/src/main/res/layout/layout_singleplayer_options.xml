@@ -42,5 +42,13 @@
             android:minHeight="48dp"
             android:textColor="@color/white"
             android:text="@string/guarantee_10_text" />
+
+        <TextView
+            android:id="@+id/bad_configuration_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/red"
+            android:text="@string/bad_configuration_text"
+            android:visibility="gone" />
     </LinearLayout>
 </ScrollView>

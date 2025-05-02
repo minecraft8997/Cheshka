@@ -108,4 +108,5 @@
     <string name="command_example" translatable="false">!load size(12) white(0 1 2)</string>
     <string name="execute_command_text">Execute command</string>
     <string name="cmd_should_start_with">Commands should start with \'!\' symbol</string>
+    <string name="bad_configuration_text">Please uncheck this option in order to play \"Noticeably hard\" mode</string>
 </resources>

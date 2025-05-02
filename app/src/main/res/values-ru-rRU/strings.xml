@@ -104,4 +104,5 @@
     <string name="cmd_dispatcher_text">Экспериментальный обработчик команд (<a href="https://cheshka.deewend.ru/commands-ru">больше информации</a>)</string>
     <string name="execute_command_text">Выполнить команду</string>
     <string name="cmd_should_start_with">Команды должны начинаться с символа \'!\'</string>
+    <string name="bad_configuration_text">Пожалуйста, отключите эту опцию для игры в \"Ощутимо сложный\" режим</string>
 </resources>

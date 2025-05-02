@@ -1,6 +1,7 @@
 package ru.deewend.cheshka;
 
 import android.annotation.SuppressLint;
+import android.content.DialogInterface;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.text.Html;
@@ -221,24 +222,38 @@ public class LauncherActivity extends CheshkaActivity {
     }
 
     private void showSingleplayerDialog() {
+        View optionsView = getSingleplayerOptionsView();
+
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle(R.string.singleplayer_options_title);
-        builder.setView(getSingleplayerOptionsView());
-        builder.setPositiveButton(R.string.confirm_text, (dialog, which) -> {
-            int boardSize = 6 + boardSizeSelection * 2;
-            boolean guaranteeRollOf6 = preferences.shouldGuaranteeRollOf6();
-
-            if (difficultySelection == Singleplayer.MODE_NOTICEABLY_HARD && guaranteeRollOf6) {
-                return; // fixme
-            }
-
-            Singleplayer.init(
-                    this, boardSize, difficultySelection, guaranteeRollOf6, null
-            );
-        });
+        builder.setView(optionsView);
+        builder.setPositiveButton(R.string.confirm_text, null);
         Helper.defaultNegativeButton(builder);
 
-        builder.create().show();
+        AlertDialog dialog = builder.create();
+        /*
+         * We need to manually decide when we want to dismiss the
+         * dialog, so we cannot setup the listener at setPositiveButton call.
+         */
+        dialog.setOnShowListener((dialogInterface) ->
+                dialog.getButton(DialogInterface.BUTTON_POSITIVE)
+                        .setOnClickListener((v) -> initSingleplayer(dialog, optionsView)));
+
+        dialog.show();
+    }
+
+    private void initSingleplayer(AlertDialog dialog, View optionsView) {
+        int boardSize = 6 + boardSizeSelection * 2;
+        boolean guaranteeRollOf6 = preferences.shouldGuaranteeRollOf6();
+
+        if (difficultySelection == Singleplayer.MODE_NOTICEABLY_HARD && guaranteeRollOf6) {
+            optionsView.findViewById(R.id.bad_configuration_text).setVisibility(View.VISIBLE);
+
+            return;
+        }
+        dialog.dismiss();
+
+        Singleplayer.init(this, boardSize, difficultySelection, guaranteeRollOf6, null);
     }
 
     private void showMultiplayerDialog() {

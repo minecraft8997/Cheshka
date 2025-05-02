@@ -257,7 +257,6 @@ public class Board {
 
     public int randomDigit() {
         int digit = trulyRandomDigit();
-        digit = 1;
         boolean noticeablyHard =
                 (PacketHandler.getInstance().singleplayer && Singleplayer.isNoticeablyHard());
         if (noticeablyHard && Singleplayer.isPlayersTurn()) {
