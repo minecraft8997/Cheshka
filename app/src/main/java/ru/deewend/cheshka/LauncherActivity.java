@@ -311,9 +311,14 @@ public class LauncherActivity extends CheshkaActivity {
 
                 return;
             }
+            String serverAddressStr = (String) serverAddress;
+            if (serverAddressStr.isEmpty()) {
+                Toast.makeText(this, R.string.empty_server_address_text, Toast.LENGTH_SHORT).show();
+
+                return;
+            }
             Object username = getEditTextValue(view, R.id.username_field, true);
 
-            String serverAddressStr = (String) serverAddress;
             preferences.setServerAddress(serverAddressStr);
             preferences.setServerPort((int) serverPort);
             preferences.setUsername((String) username);

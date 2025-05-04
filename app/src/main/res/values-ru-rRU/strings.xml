@@ -72,7 +72,7 @@
     <string name="sounds_checkbox_text">Включить звуки</string>
     <string name="timer_checkbox_text">Показывать время, проведённое в игре</string>
     <string name="movement_animation_checkbox_text">Включить анимацию движения фигур</string>
-    <string name="eval_bar_checkbox_text">Включить оценку позиции (бета)</string>
+    <string name="eval_bar_checkbox_text">Включить оценку позиции</string>
     <string name="cancel_text">Отменить</string>
     <string name="confirm_text">Подтвердить</string>
     <string name="resign_title_text">Вы собираетесь признать поражение</string>
@@ -105,4 +105,5 @@
     <string name="execute_command_text">Выполнить команду</string>
     <string name="cmd_should_start_with">Команды должны начинаться с символа \'!\'</string>
     <string name="bad_configuration_text">Пожалуйста, отключите эту опцию для игры в \"Ощутимо сложный\" режим</string>
+    <string name="empty_server_address_text">Пожалуйста, укажите адрес сервера (например, playcheshka.ru)</string>
 </resources>

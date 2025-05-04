@@ -75,7 +75,7 @@
     <string name="sounds_checkbox_text">Enable sounds</string>
     <string name="timer_checkbox_text">Show playtime</string>
     <string name="movement_animation_checkbox_text">Enable piece movement animation</string>
-    <string name="eval_bar_checkbox_text">Enable evaluation bar (beta)</string>
+    <string name="eval_bar_checkbox_text">Enable evaluation bar</string>
     <string name="cancel_text">Cancel</string>
     <string name="confirm_text">Confirm</string>
     <string name="resign_title_text">You are about to resign</string>
@@ -109,4 +109,5 @@
     <string name="execute_command_text">Execute command</string>
     <string name="cmd_should_start_with">Commands should start with \'!\' symbol</string>
     <string name="bad_configuration_text">Please uncheck this option in order to play \"Noticeably hard\" mode</string>
+    <string name="empty_server_address_text">Please specify server address (for example, playcheshka.ru)</string>
 </resources>
