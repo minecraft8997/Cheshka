@@ -143,6 +143,7 @@ public class LauncherActivity extends CheshkaActivity {
         return DO_NOT_DISABLE;
     }
 
+    /** @noinspection ExtractMethodRecommender*/
     private void processCommand(String command, boolean confirm) {
         if (!confirm) {
             String finalCommand = command;
@@ -184,6 +185,20 @@ public class LauncherActivity extends CheshkaActivity {
             if (whitesPos != null) board.deserialize(true, whitesPos);
             if (blacksPos != null) board.deserialize(false, blacksPos);
             board.setAllowVaults(allowVaults);
+        } else if (command.equals("credentials")) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle(R.string.credentials_title_text);
+            builder.setView(getCredentialsView());
+            if (!Helper.NULL_UUID_OBJ.equals(preferences.getClientId())) {
+                builder.setPositiveButton(R.string.delete_uuid_text, (dialog, which) -> {
+                    preferences.setClientId(Helper.NULL_UUID_OBJ);
+
+                    Toast.makeText(this, R.string.success_text, Toast.LENGTH_SHORT).show();
+                });
+            }
+            Helper.defaultNegativeButton(builder);
+
+            builder.create().show();
         } else {
             Toast.makeText(this, R.string.unknown_command_text, Toast.LENGTH_SHORT).show();
         }
@@ -300,16 +315,17 @@ public class LauncherActivity extends CheshkaActivity {
             ((EditText) view.findViewById(R.id.server_port_field))
                     .setText(String.valueOf(preferences.getServerPort()));
         }
-        if (preferences.hasCredentials()) {
-            ((EditText) view.findViewById(R.id.username_field)).setText(preferences.getUsername());
-        }
+        ((EditText) view.findViewById(R.id.username_field)).setText(preferences.getUsername());
+
         if (!Cheshka.APPGALLERY_BUILD) {
             view.findViewById(R.id.server_address_field_text).setVisibility(View.VISIBLE);
             view.findViewById(R.id.server_address_field).setVisibility(View.VISIBLE);
             view.findViewById(R.id.server_port_field_text).setVisibility(View.VISIBLE);
             view.findViewById(R.id.server_port_field).setVisibility(View.VISIBLE);
         } else {
-            view.findViewById(R.id.huawei_notification_text).setVisibility(View.VISIBLE);
+            TextView huaweiNotification = view.findViewById(R.id.huawei_notification_text);
+            huaweiNotification.setMovementMethod(LinkMovementMethod.getInstance());
+            huaweiNotification.setVisibility(View.VISIBLE);
         }
         view.findViewById(R.id.proceed_button).setOnClickListener((v) -> {
             Object serverAddress = getEditTextValue(view, R.id.server_address_field, true);
@@ -387,6 +403,30 @@ public class LauncherActivity extends CheshkaActivity {
         evalBarCheckbox.setOnCheckedChangeListener(checkBoxListener);
 
         return view;
+    }
+
+    @SuppressLint("InflateParams")
+    private View getCredentialsView() {
+        View view = getLayoutInflater().inflate(R.layout.layout_credentials, null);
+        String serverAddress = toNonEmptyString(preferences.getServerAddress());
+        String serverPort = toNonEmptyString(preferences.getServerPort());
+        String username = toNonEmptyString(preferences.getUsername());
+        String uuid = toNonEmptyString(preferences.getClientId());
+        String translatedMessage =
+                getString(R.string.credentials_text, serverAddress, serverPort, username, uuid);
+        ((TextView) view.findViewById(R.id.credentials_text)).setText(translatedMessage);
+
+        return view;
+    }
+
+    private String toNonEmptyString(Object preferencesValue) {
+        boolean emptyString =
+                (preferencesValue instanceof String && ((String) preferencesValue).isEmpty());
+        if (emptyString || preferencesValue.equals(0)) {
+            return getString(R.string.none_text);
+        }
+
+        return preferencesValue.toString();
     }
 
     private void configureSpinner(Spinner spinner, int arrayId, int selection) {

@@ -84,10 +84,6 @@ public class GamePreferences {
         return serverPort;
     }
 
-    public boolean hasCredentials() {
-        return !clientId.equals(NULL_UUID_OBJ);
-    }
-
     public String getUsername() {
         return username;
     }
