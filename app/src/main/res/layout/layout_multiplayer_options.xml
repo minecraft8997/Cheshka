@@ -10,11 +10,28 @@
         android:layout_margin="24dp">
 
         <TextView
+            android:id="@+id/huawei_notification_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/grey"
+            android:text="@string/huawei_notification_text"
+            android:visibility="gone" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/grey"
+            android:text="@string/third_party_servers_warning_text"
+            android:layout_marginBottom="24dp" />
+
+        <TextView
+            android:id="@+id/server_address_field_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:labelFor="@id/server_address_field"
             android:textColor="@color/white"
-            android:text="@string/server_address_text" />
+            android:text="@string/server_address_text"
+            android:visibility="gone" />
 
         <EditText
             android:id="@+id/server_address_field"
@@ -24,14 +41,17 @@
             android:autofillHints=""
             android:inputType="text"
             android:text="@string/server_address_example"
-            android:hint="@string/server_address_example" />
+            android:hint="@string/server_address_example"
+            android:visibility="gone" />
 
         <TextView
+            android:id="@+id/server_port_field_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:labelFor="@id/server_port_field"
             android:textColor="@color/white"
-            android:text="@string/server_port_text" />
+            android:text="@string/server_port_text"
+            android:visibility="gone" />
 
         <EditText
             android:id="@+id/server_port_field"
@@ -41,7 +61,8 @@
             android:autofillHints=""
             android:inputType="number"
             android:text="@string/server_port_example"
-            android:hint="@string/server_port_example" />
+            android:hint="@string/server_port_example"
+            android:visibility="gone" />
 
         <TextView
             android:layout_width="match_parent"

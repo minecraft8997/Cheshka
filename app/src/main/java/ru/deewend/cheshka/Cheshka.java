@@ -6,6 +6,8 @@ import android.content.Context;
 import androidx.appcompat.app.AppCompatDelegate;
 
 public class Cheshka extends Application {
+    public static final boolean APPGALLERY_BUILD = false;
+
     private GamePreferences preferences;
 
     public static Cheshka getInstance(CheshkaActivity activity) {

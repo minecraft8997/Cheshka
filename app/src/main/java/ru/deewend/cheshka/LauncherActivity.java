@@ -303,6 +303,14 @@ public class LauncherActivity extends CheshkaActivity {
         if (preferences.hasCredentials()) {
             ((EditText) view.findViewById(R.id.username_field)).setText(preferences.getUsername());
         }
+        if (!Cheshka.APPGALLERY_BUILD) {
+            view.findViewById(R.id.server_address_field_text).setVisibility(View.VISIBLE);
+            view.findViewById(R.id.server_address_field).setVisibility(View.VISIBLE);
+            view.findViewById(R.id.server_port_field_text).setVisibility(View.VISIBLE);
+            view.findViewById(R.id.server_port_field).setVisibility(View.VISIBLE);
+        } else {
+            view.findViewById(R.id.huawei_notification_text).setVisibility(View.VISIBLE);
+        }
         view.findViewById(R.id.proceed_button).setOnClickListener((v) -> {
             Object serverAddress = getEditTextValue(view, R.id.server_address_field, true);
             Object serverPort = getEditTextValue(view, R.id.server_port_field, false);
@@ -312,6 +320,11 @@ public class LauncherActivity extends CheshkaActivity {
                 return;
             }
             String serverAddressStr = (String) serverAddress;
+            int serverPortInt = (int) serverPort;
+            if (Cheshka.APPGALLERY_BUILD) {
+                serverAddressStr = getString(R.string.server_address_example);
+                serverPortInt = Integer.parseInt(getString(R.string.server_port_example));
+            }
             if (serverAddressStr.isEmpty()) {
                 Toast.makeText(this, R.string.empty_server_address_text, Toast.LENGTH_SHORT).show();
 
@@ -320,7 +333,7 @@ public class LauncherActivity extends CheshkaActivity {
             Object username = getEditTextValue(view, R.id.username_field, true);
 
             preferences.setServerAddress(serverAddressStr);
-            preferences.setServerPort((int) serverPort);
+            preferences.setServerPort(serverPortInt);
             preferences.setUsername((String) username);
             preferences.savePreferences();
 

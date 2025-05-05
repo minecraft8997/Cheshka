@@ -110,4 +110,6 @@
     <string name="cmd_should_start_with">Commands should start with \'!\' symbol</string>
     <string name="bad_configuration_text">Please uncheck this option in order to play \"Noticeably hard\" mode</string>
     <string name="empty_server_address_text">Please specify server address (for example, playcheshka.ru)</string>
+    <string name="huawei_notification_text">This game build is designed for HUAWEI AppGallery. Only official game server (playcheshka.ru) is supported. In order to be able to connect to third-party servers, please obtain the game from another official source (more at <a href="https://cheshka.deewend.ru/">https://cheshka.deewend.ru/</a>).</string>
+    <string name="third_party_servers_warning_text">Please note that content on third-party servers (other than playcheshka.ru) is generally not reviewed. Nicknames (usernames) are not pre-moderated, even on the official server. The developers cannot accept responsibility for these types of content. The game\'s network protocol does not support encryption and/or data/content integrity verification. Parental guidance may be recommended.</string>
 </resources>
