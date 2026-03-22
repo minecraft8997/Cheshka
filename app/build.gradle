@@ -3,13 +3,13 @@ plugins {
 }
 
 android {
-    namespace 'ru.deewend.cheshka'
+    namespace 'com.deewend.cheshka'
     compileSdk 34
 
     defaultConfig {
-        applicationId "ru.deewend.cheshka"
+        applicationId "com.deewend.cheshka"
         minSdk 16
-        targetSdk 34
+        targetSdk 35
         versionCode 7
         versionName "1.1.1"
 
@@ -31,7 +31,7 @@ android {
     }
     packaging {
         resources {
-            excludes += '/META-INF/{AL2.0,LGPL2.1}'
+            it.excludes += '/META-INF/{AL2.0,LGPL2.1}'
         }
     }
 }

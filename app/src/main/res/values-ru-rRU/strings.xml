@@ -20,7 +20,7 @@
     <string name="bad_integer_text">Недействительное число в одном из полей ввода. Пожалуйста, попробуйте ещё раз</string>
     <string name="captcha_text">Капча</string>
     <string name="copyright_text">Версия %s\n© deewend, 2025</string>
-    <string name="links_text"><a href="https://cheshka.deewend.ru/tutorial">Правила игры</a> · <a href="https://cheshka.deewend.ru">Веб-сайт</a> · <a href="https://cheshka.deewend.ru/privacy">Политика конфиденциальности</a> · <a href="https://github.com/minecraft8997/Cheshka">GitHub-репозиторий</a></string>
+    <string name="links_text"><a href="https://cheshka.deewend.com/tutorial">Правила игры</a> · <a href="https://cheshka.deewend.com">Веб-сайт</a> · <a href="https://cheshka.deewend.com/privacy">Политика конфиденциальности</a> · <a href="https://github.com/minecraft8997/Cheshka">GitHub-репозиторий</a></string>
     <string name="captcha_hint_text">Разгаданный текст…</string>
     <string name="too_much_data_text">Сервер отправляет слишком много данных. Соединение было разорвано</string>
     <string name="weird_ui_stuff_text">Слишком много данных о UI-компонентах игры было освобождено на момент обработки сетевого пакета. Игра не может обрабатывать обновления</string>
@@ -101,12 +101,12 @@
     <string name="autosave_text">Изменения сохраняются автоматически</string>
     <string name="close_text">Закрыть</string>
     <string name="multiplayer_text">Многопользовательская игра</string>
-    <string name="cmd_dispatcher_text">Экспериментальный обработчик команд (<a href="https://cheshka.deewend.ru/commands-ru">больше информации</a>)</string>
+    <string name="cmd_dispatcher_text">Экспериментальный обработчик команд (<a href="https://cheshka.deewend.com/commands-ru">больше информации</a>)</string>
     <string name="execute_command_text">Выполнить команду</string>
     <string name="cmd_should_start_with">Команды должны начинаться с символа \'!\'</string>
     <string name="bad_configuration_text">Пожалуйста, отключите эту опцию для игры в \"Ощутимо сложный\" режим</string>
     <string name="empty_server_address_text">Пожалуйста, укажите адрес сервера (например, playcheshka.ru)</string>
-    <string name="huawei_notification_text">Эта сборка игры предназначена для HUAWEI AppGallery. Здесь присутствует возможность подключения только к официальному серверу игры (playcheshka.ru). Для получения возможности игры на сторонних серверах, пожалуйста, загрузите игру из другого официального источника (подробнее на <a href="https://cheshka.deewend.ru/">https://cheshka.deewend.ru/</a>).</string>
+    <string name="huawei_notification_text">Эта сборка игры предназначена для HUAWEI AppGallery. Здесь присутствует возможность подключения только к официальному серверу игры (playcheshka.ru). Для получения возможности игры на сторонних серверах, пожалуйста, загрузите игру из другого официального источника (подробнее на <a href="https://cheshka.deewend.com/">https://cheshka.deewend.com/</a>).</string>
     <string name="third_party_servers_warning_text">Обратите внимание, что контент на сторонних серверах (отличных от playcheshka.ru), как правило, не подвергается оценке. Имена пользователей не подвергаются предварительной модерации в том числе и на официальном сервере. Авторы игры не могут нести ответственность за эти виды контента. Сетевой протокол игры не поддерживает шифрование и/или верификацию целостности данных/контента. Может быть рекомендован родительский контроль.</string>
     <string name="credentials_title_text">Последние сохранённые данные для подключения</string>
     <string name="credentials_text">Текст ниже можно скопировать.\n\nАдрес сервера: %s\nПорт сервера: %s\nИмя пользователя: %s\nUUID: %s</string>
