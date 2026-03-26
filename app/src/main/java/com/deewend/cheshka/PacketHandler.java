@@ -223,8 +223,8 @@ public class PacketHandler {
 
             board.setWhitesTurn(whiteColor == myTurnNow);
 
-            board.deserialize(whiteColor, opponentFound.myPiecePositions);
-            board.deserialize(!whiteColor, opponentFound.opponentPiecePositions);
+            board.deserializePosition(whiteColor, opponentFound.myPiecePositions);
+            board.deserializePosition(!whiteColor, opponentFound.opponentPiecePositions);
 
             Helper.startActivity(activity, InGameActivity.class);
 

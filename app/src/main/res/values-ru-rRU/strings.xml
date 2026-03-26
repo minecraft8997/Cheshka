@@ -19,7 +19,7 @@
     <string name="please_wait_text">Пожалуйста, подождите…</string>
     <string name="bad_integer_text">Недействительное число в одном из полей ввода. Пожалуйста, попробуйте ещё раз</string>
     <string name="captcha_text">Капча</string>
-    <string name="copyright_text">Версия %s\n© deewend, 2025</string>
+    <string name="copyright_text">Версия %s\n© deewend, 2025–2026</string>
     <string name="links_text"><a href="https://cheshka.deewend.com/tutorial">Правила игры</a> · <a href="https://cheshka.deewend.com">Веб-сайт</a> · <a href="https://cheshka.deewend.com/privacy">Политика конфиденциальности</a> · <a href="https://github.com/minecraft8997/Cheshka">GitHub-репозиторий</a></string>
     <string name="captcha_hint_text">Разгаданный текст…</string>
     <string name="too_much_data_text">Сервер отправляет слишком много данных. Соединение было разорвано</string>

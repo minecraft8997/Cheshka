@@ -15,6 +15,7 @@ import android.widget.EditText;
 import androidx.appcompat.app.AlertDialog;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -22,11 +23,13 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Field;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Properties;
 import java.util.UUID;
 import java.util.zip.CRC32;
 
@@ -282,5 +285,75 @@ public class Helper {
         e.printStackTrace(writer);
 
         return writer0.toString();
+    }
+
+    /*
+     * If expectedClassName == null, retrieve the return value with
+     * Either#second and treat it as the className of the provided serialized object.
+     *
+     * Otherwise, performs the primary stage of object deserialization by converting
+     * its field=value entries to a Properties instance.
+     */
+    /** @noinspection CharsetObjectCanBeUsed */
+    public static Either<Properties, String> objStringToData(
+            String str, String expectedClassName
+    ) {
+        int firstBrace = str.indexOf('{');
+        int secondBrace = str.lastIndexOf('}');
+        if (firstBrace == -1 || secondBrace != str.length() - 1) {
+            throw new IllegalArgumentException("Bad string: " + str);
+        }
+        String className = str.substring(0, firstBrace);
+        if (expectedClassName == null) return Either.of(className);
+        if (!className.equals(expectedClassName)) {
+            throw new IllegalArgumentException("Bad className." +
+                    "Expected: " + expectedClassName + ", got: " + className);
+        }
+        byte[] contents;
+        try {
+            contents = str
+                    .substring(firstBrace + 1, secondBrace)
+                    .getBytes("US-ASCII");
+        } catch (UnsupportedEncodingException e) {
+            throw new RuntimeException("US-ASCII is not supported by the device", e);
+        }
+        int braceLevel = 0;
+        for (int i = 0; i < contents.length; i++) {
+            if (contents[i] == '{') braceLevel++;
+            else if (contents[i] == '}') braceLevel = Math.max(braceLevel - 1, 0);
+            else if (contents[i] == ',' && braceLevel == 0) contents[i] = '\n';
+        }
+        Properties props = new Properties();
+        try (InputStreamReader reader = new InputStreamReader(new ByteArrayInputStream(contents))) {
+            props.load(reader);
+        } catch (IOException ignored) {
+            // should never happen
+        }
+
+        return Either.of(props);
+    }
+
+    public static List<?> deserializeList(Board board, String str) {
+        if (!str.startsWith("[") || !str.endsWith("]")) {
+            throw new IllegalArgumentException("Not a list: " + str);
+        }
+        String[] unparsedElements = str.substring(1, str.length() - 1).split(", ");
+
+        List<Object> result = new ArrayList<>();
+        for (String element : unparsedElements) {
+            String className = objStringToData(element, null).second();
+
+            Object obj;
+            if (className.equals("Piece")) {
+                obj = Board.Piece.deserialize(element);
+            } else if (className.equals("PossibleMove")) {
+                obj = Board.deserializePossibleMove(board, element);
+            } else {
+                throw new IllegalArgumentException("Unsupported className: " + className);
+            }
+            result.add(obj);
+        }
+
+        return result;
     }
 }

@@ -10,6 +10,7 @@ import com.deewend.cheshka.packet.MakeMove;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Properties;
 import java.util.Random;
 import java.util.StringTokenizer;
 
@@ -89,7 +90,24 @@ public class Board {
                     "whitePiece=" + whitePiece +
                     ", position=" + position +
                     ", revertedPosition=" + revertedPosition +
+                    ", lastRealPosition=" + lastRealPosition +
                     '}';
+        }
+
+        static Piece deserialize(String str) {
+            Properties props = Helper.objStringToData(str, "Piece").first();
+
+            boolean whitePiece = Boolean.parseBoolean(props.getProperty("whitePiece"));
+            int position = Integer.parseInt(props.getProperty("position"));
+            boolean revertedPosition = Boolean.parseBoolean(props.getProperty("revertedPosition"));
+            int lastRealPosition = Integer.parseInt(props.getProperty("lastRealPosition"));
+
+            Piece result = new Piece(whitePiece);
+            result.position = position;
+            result.revertedPosition = revertedPosition;
+            result.lastRealPosition = lastRealPosition;
+
+            return result;
         }
     }
 
@@ -170,6 +188,15 @@ public class Board {
                     ", destination=" + destination +
                     '}';
         }
+    }
+
+    public static PossibleMove deserializePossibleMove(Board board, String str) {
+        Properties props = Helper.objStringToData(str, "PossibleMove").first();
+
+        Piece piece = Piece.deserialize(props.getProperty("piece"));
+        int destination = Integer.parseInt(props.getProperty("destination"));
+
+        return board.new PossibleMove(piece, destination);
     }
 
     public class NoMove extends PossibleMove {
@@ -330,7 +357,7 @@ public class Board {
     }
 
     /** @noinspection UnusedReturnValue*/
-    public boolean deserialize(boolean white, String position) {
+    public boolean deserializePosition(boolean white, String position) {
         List<Piece> tmpList = new ArrayList<>();
         StringTokenizer tokenizer = new StringTokenizer(position);
         while (tokenizer.hasMoreTokens()) {

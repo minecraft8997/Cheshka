@@ -182,8 +182,8 @@ public class LauncherActivity extends CheshkaActivity {
             Singleplayer.init(this, boardSize, mode, guaranteeRollOf6, whiteColor);
 
             Board board = PacketHandler.getInstance().board;
-            if (whitesPos != null) board.deserialize(true, whitesPos);
-            if (blacksPos != null) board.deserialize(false, blacksPos);
+            if (whitesPos != null) board.deserializePosition(true, whitesPos);
+            if (blacksPos != null) board.deserializePosition(false, blacksPos);
             board.setAllowVaults(allowVaults);
         } else if (command.equals("credentials")) {
             AlertDialog.Builder builder = new AlertDialog.Builder(this);

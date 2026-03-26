@@ -65,6 +65,16 @@ public class InGameActivity extends CheshkaActivity {
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+
+        if (PacketHandler.getInstance().board == null) {
+            // android vendor-specific optimizations have reset the game state
+            // fixme
+        }
+    }
+
+    @Override
     protected void onDestroy() {
         super.onDestroy();
 
