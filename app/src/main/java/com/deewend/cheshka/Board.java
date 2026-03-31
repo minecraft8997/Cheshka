@@ -845,6 +845,7 @@ public class Board {
     @NonNull
     @Override
     public String toString() {
+        boolean hasLastDiceRollResult = (lastDiceRollResult != null);
         String result = "Board{" +
                 "turnWaitingTimeoutMillis=" + turnWaitingTimeoutMillis +
                 ", noMoveDrawThreshold=" + noMoveDrawThreshold +
@@ -858,12 +859,11 @@ public class Board {
                 ", moveNumber=" + moveNumber +
                 ", subMoveNumber=" + subMoveNumber +
                 ", whitesTurn=" + whitesTurn +
-                ", lastCalculatedDestination=" + lastCalculatedDestination;
-        if (lastDiceRollResult != null) {
+                ", lastCalculatedDestination=" + lastCalculatedDestination +
+                ", hasLastDiceRollResult=" + hasLastDiceRollResult;
+        if (hasLastDiceRollResult) {
             result += ", lastDiceRollResult.first=" + lastDiceRollResult.first +
                     ", lastDiceRollResult.second=" + Helper.listToString(lastDiceRollResult.second);
-        } else {
-            result += ", lastDiceRollResult=null";
         }
         result += ", noMovesCounter=" + noMovesCounter +
                 ", lastActionTimestamp=" + lastActionTimestamp +
@@ -880,5 +880,63 @@ public class Board {
                 '}';
 
         return result;
+    }
+
+    /** @noinspection unchecked*/
+    public static Board deserialize(String str) {
+        Properties props = Helper.objStringToData(str, "Board").first();
+
+        long turnWaitingTimeoutMillis = Long.parseLong(props.getProperty("turnWaitingTimeoutMillis"));
+        int noMoveDrawThreshold = Integer.parseInt(props.getProperty("noMoveDrawThreshold"));
+        boolean guaranteeRollOf6 = Boolean.parseBoolean(props.getProperty("guaranteeRollOf6"));
+        int diagonalLength = Integer.parseInt(props.getProperty("diagonalLength"));
+        /*
+         * We don't really need to parse whitesDiagonalStart,
+         * blacksSpawnPosition and blacksDiagonalStartPlusOne.
+         */
+        Board board = new Board(true,
+                PacketHandler.getInstance().random,
+                (diagonalLength * 2),
+                turnWaitingTimeoutMillis,
+                noMoveDrawThreshold,
+                guaranteeRollOf6
+        );
+        List<Piece> pieces = (List<Piece>)
+                Helper.deserializeList(props.getProperty("pieces"), board);
+        board.pieces.addAll(pieces);
+
+        board.allowVaults = Boolean.parseBoolean(props.getProperty("allowVaults"));
+        board.moveNumber = Integer.parseInt(props.getProperty("moveNumber"));
+        board.subMoveNumber = Integer.parseInt(props.getProperty("subMoveNumber"));
+        board.whitesTurn = Boolean.parseBoolean(props.getProperty("whitesTurn"));
+        board.lastCalculatedDestination =
+                Integer.parseInt(props.getProperty("lastCalculatedDestination"));
+        if (Boolean.parseBoolean(props.getProperty("hasLastDiceRollResult"))) {
+            int digit = Integer.parseInt(props.getProperty("lastDiceRollResult.first"));
+            List<PossibleMove> possibleMoves = (List<PossibleMove>)
+                    Helper.deserializeList(props.getProperty("lastDiceRollResult.second"), board);
+
+            board.lastDiceRollResult = new Pair<>(digit, possibleMoves);
+        }
+        board.noMovesCounter = Integer.parseInt(props.getProperty("noMovesCounter"));
+        board.lastActionTimestamp = Long.parseLong(props.getProperty("lastActionTimestamp"));
+        board.gameState = Byte.parseByte(props.getProperty("gameState"));
+        board.resigned = Boolean.parseBoolean(props.getProperty("resigned"));
+        board.lastChance = Boolean.parseBoolean(props.getProperty("lastChance"));
+        board.lastChanceActivated = Boolean.parseBoolean(props.getProperty("lastChanceActivated"));
+        board.whitesAutomaticMoveCount =
+                Integer.parseInt(props.getProperty("whitesAutomaticMoveCount"));
+        board.blacksAutomaticMoveCount =
+                Integer.parseInt(props.getProperty("blacksAutomaticMoveCount"));
+        board.rolled6NoticeablyHard =
+                Boolean.parseBoolean(props.getProperty("rolled6NoticeablyHard"));
+        board.doNotReRoll6NoticeablyHard =
+                Boolean.parseBoolean(props.getProperty("doNotReRoll6NoticeablyHard"));
+        board.whitesSkippedMovesGuarantee6 =
+                Integer.parseInt(props.getProperty("whitesSkippedMovesGuarantee6"));
+        board.blacksSkippedMovesGuarantee6 =
+                Integer.parseInt(props.getProperty("blacksSkippedMovesGuarantee6"));
+
+        return board;
     }
 }

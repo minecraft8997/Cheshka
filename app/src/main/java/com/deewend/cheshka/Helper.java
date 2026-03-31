@@ -255,7 +255,7 @@ public class Helper {
         builder.append('[');
         int size = list.size();
         for (int i = 0; i < size; i++) {
-            builder.append(list.get(i));
+            builder.append(list.get(i).toString());
             if (i < size - 1) builder.append(", ");
         }
         builder.append(']');
@@ -333,25 +333,36 @@ public class Helper {
         return Either.of(props);
     }
 
-    public static List<?> deserializeList(Board board, String str) {
+    public static List<?> deserializeList(String str, Object...ctxArr) {
         if (!str.startsWith("[") || !str.endsWith("]")) {
             throw new IllegalArgumentException("Not a list: " + str);
         }
         String[] unparsedElements = str.substring(1, str.length() - 1).split(", ");
 
         List<Object> result = new ArrayList<>();
-        for (String element : unparsedElements) {
+        for (int i = 0; i < unparsedElements.length; i++) {
+            String element = unparsedElements[i];
             String className = objStringToData(element, null).second();
 
-            Object obj;
-            if (className.equals("Piece")) {
-                obj = Board.Piece.deserialize(element);
-            } else if (className.equals("PossibleMove")) {
-                obj = Board.deserializePossibleMove(board, element);
-            } else {
-                throw new IllegalArgumentException("Unsupported className: " + className);
+            Object obj = null;
+            Object ctx = (ctxArr.length == 0 ? null : ctxArr[(i >= ctxArr.length ? 0 : i)]);
+            switch (className) {
+                case "Piece":
+                    obj = Board.Piece.deserialize(element);
+                    break;
+                case "PossibleMove":
+                    obj = Board.deserializePossibleMove((Board) ctx, element);
+                    break;
+                case "Board":
+                    obj = Board.deserialize(element);
+                    break;
+                case "Singleplayer":
+                    Singleplayer.deserialize((CheshkaActivity) ctx, element);
+                    break;
+                default:
+                    throw new IllegalArgumentException("Unsupported className: " + className);
             }
-            result.add(obj);
+            if (obj != null) result.add(obj);
         }
 
         return result;

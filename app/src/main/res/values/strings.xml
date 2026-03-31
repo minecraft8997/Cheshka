@@ -80,7 +80,7 @@
     <string name="confirm_text">Confirm</string>
     <string name="resign_title_text">You are about to resign</string>
     <string name="issue_detected_text">An issue was detected</string>
-    <string name="issue_detected_description_text">The game has detected an unexpected issue and generated a crash report. You can help the developers by sending this report via your mail client. If this behavior is supported, you\'ll have the opportunity to review its contents before sending</string>
+    <string name="issue_detected_description_text">The game has detected an unexpected issue and generated a crash report. You can help the developers by sending this report via your mail client. If this behavior is supported, you will have the opportunity to review its contents before sending</string>
     <string name="special_highlighting_text">Enable special highlighting for pieces turning onto the diagonal line</string>
     <string name="difficulty_text">Difficulty:</string>
     <string name="board_size_text">Board size:</string>
@@ -117,4 +117,6 @@
     <string name="delete_uuid_text">Delete UUID locally</string>
     <string name="success_text">Success</string>
     <string name="none_text">none</string>
+    <string name="context_lost_title_text">Game context lost</string>
+    <string name="context_lost_text">The operating system of your device (likely, its power-saving features) has incorrectly terminated the game. Do not worry: Cheshka is able to recover your game state.\n\nIf it was a singleplayer game, go to the main menu, press the \"Singleplayer\" button and you will be asked if you want to restore your previous session.\nIf it was a multiplayer game, reconnect to the server and you will automatically return to the game if it is still running.</string>
 </resources>

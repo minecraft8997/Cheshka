@@ -4,14 +4,15 @@ import android.util.Pair;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 
 public class Singleplayer {
-    public static final int NO_MOVE_DRAW_THRESHOLD = 24;
+    public static final int NO_MOVE_DRAW_THRESHOLD = 1024;
     public static final int MODE_NORMAL = 0;
     public static final int MODE_HARD = 1;
     public static final int MODE_NOTICEABLY_HARD = 2;
 
-    private static boolean whiteColor;
+    private static boolean whiteColor; // bot's color
     private static int mode;
     private static boolean preMoveTimeout;
     private static boolean playerHelpTimeout;
@@ -31,19 +32,24 @@ public class Singleplayer {
             Boolean whiteColor
     ) {
         PacketHandler handler = PacketHandler.getInstance();
+        handler.boardSize = boardSize;
+        handler.noMoveDrawThreshold = NO_MOVE_DRAW_THRESHOLD;
+        handler.guaranteeRollOf6 = guaranteeRollOf6;
+        handler.instantiateBoard();
+        init0(context, (whiteColor == null ? handler.random.nextBoolean() : !whiteColor), mode);
+
+        Helper.startActivity(context, InGameActivity.class);
+    }
+
+    private static void init0(CheshkaActivity context, boolean whiteColor, int mode) {
+        PacketHandler handler = PacketHandler.getInstance();
         Singleplayer.mode = mode;
         handler.singleplayer = true;
         handler.displayName = context.getString(R.string.you_text);
         handler.opponentDisplayName = context.getString(R.string.bot_text);
-        handler.boardSize = boardSize;
         handler.secondsForTurn = 0;
-        handler.noMoveDrawThreshold = NO_MOVE_DRAW_THRESHOLD;
-        handler.guaranteeRollOf6 = guaranteeRollOf6;
-        handler.whiteColor = (whiteColor == null ? handler.random.nextBoolean() : whiteColor);
-        Singleplayer.whiteColor = !handler.whiteColor;
-        handler.instantiateBoard();
-
-        Helper.startActivity(context, InGameActivity.class);
+        handler.whiteColor = !whiteColor;
+        Singleplayer.whiteColor = whiteColor;
     }
 
     public static void tick(InGameActivity activity) {
@@ -286,5 +292,26 @@ public class Singleplayer {
         playerHelpTimeout = false;
         timeoutSince = 0L;
         timeoutDuration = 0L;
+    }
+
+    public static String _toString() {
+        return "Singleplayer{" +
+                "whiteColor=" + whiteColor +
+                ", mode=" + mode +
+                ", preMoveTimeout=" + preMoveTimeout +
+                ", playerHelpTimeout=" + playerHelpTimeout +
+                ", timeoutSince=" + timeoutSince +
+                ", timeoutDuration=" + timeoutDuration +
+                ", handler.gameStartTimestamp=" + PacketHandler.getInstance().gameStartTimestamp +
+                '}';
+    }
+
+    public static void deserialize(CheshkaActivity context, String str) {
+        Properties props = Helper.objStringToData(str, "Singleplayer").first();
+
+        boolean whiteColor = Boolean.parseBoolean(props.getProperty("whiteColor"));
+        int mode = Integer.parseInt(props.getProperty("mode"));
+
+        init0(context, whiteColor, mode);
     }
 }
