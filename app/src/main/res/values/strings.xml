@@ -22,7 +22,7 @@
     <string name="bad_integer_text">Found a bad integer in one of the input fields, please try again</string>
     <string name="captcha_text">Captcha challenge</string>
     <string name="copyright_text">Version %s\n© deewend, 2025–2026</string>
-    <string name="links_text"><a href="https://cheshka.deewend.com/tutorial">Tutorial</a> · <a href="https://cheshka.deewend.com">Website</a> · <a href="https://cheshka.deewend.com/privacy">Privacy policy</a> · <a href="https://github.com/minecraft8997/Cheshka">GitHub repository</a></string>
+    <string name="links_text"><a href="https://cheshka.deewend.com/tutorial">Tutorial</a> · <a href="https://cheshka.deewend.com">Website</a> · <a href="https://cheshka.deewend.com/privacy">Privacy policy</a> · <a href="https://cheshka.deewend.com/git">GitHub repository</a></string>
     <string name="captcha_hint_text">Captcha solution…</string>
     <string name="too_much_data_text">The server sends too much data. The connection was terminated</string>
     <string name="weird_ui_stuff_text">Too much UI data was freed at the moment of handling a network packet. The game is unable to handle updates</string>
@@ -119,4 +119,5 @@
     <string name="none_text">none</string>
     <string name="context_lost_title_text">Game context lost</string>
     <string name="context_lost_text">The operating system of your device (likely, its power-saving features) has incorrectly terminated the game. Do not worry: Cheshka is able to recover your game state.\n\nIf it was a singleplayer game, go to the main menu, press the \"Singleplayer\" button and you will be asked if you want to restore your previous session.\nIf it was a multiplayer game, reconnect to the server and you will automatically return to the game if it is still running.</string>
+    <string name="dice_face_view_description_text">How many times was %d rolled?</string>
 </resources>

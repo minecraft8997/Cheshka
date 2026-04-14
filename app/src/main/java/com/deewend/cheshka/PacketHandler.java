@@ -321,7 +321,6 @@ public class PacketHandler {
         myTurnNow = false;
         resignsReceived = 0;
 
-        DiceView.reset();
         Singleplayer.reset();
         MovementAnimationManager.getInstance().reset();
         InGameActivity.resigned = false;

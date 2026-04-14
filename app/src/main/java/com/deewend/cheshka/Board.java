@@ -498,11 +498,15 @@ public class Board {
         lastActionTimestamp = System.currentTimeMillis();
 
         if (clientside) {
-            DiceView.setMode(DiceView.MODE_ROLLING_EXACT_DIGIT);
-            DiceView.setDigit(digit);
-
             InGameActivity activity = getInGameActivity();
-            if (activity != null) activity.playDiceRollSound();
+            if (activity != null) {
+                activity.playDiceRollSound();
+                DiceView diceView = activity.getDiceView();
+                if (diceView != null) {
+                    diceView.setMode(DiceView.MODE_ROLLING_EXACT_DIGIT);
+                    diceView.setDigit(digit);
+                }
+            }
         }
 
         return packet;
@@ -544,6 +548,9 @@ public class Board {
             if (oldPosition == whitesDiagonalStart - 1 && !whitesTurn) {
                 newPosition = 0;
             } else if (!whitesTurn && oldPosition == getSpawnPosition() && piece.revertedPosition) {
+                // blacksDiagonalStartPlusOne refers to a non-existent cell in a 2x2 board
+                if (diagonalLength == 1) return false;
+
                 newPosition = blacksDiagonalStartPlusOne;
             } else if (whitesTurn && oldPosition == whitesDiagonalStart + diagonalLength - 1) {
                 return false;

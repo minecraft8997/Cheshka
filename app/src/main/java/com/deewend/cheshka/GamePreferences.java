@@ -25,6 +25,7 @@ public class GamePreferences {
     private int boardSizeDefaultSelection;
     private boolean guaranteeRollOf6;
     private String lastCommand;
+    private String serializedGame;
 
     private int latestLoadHashCode = hashCode();
 
@@ -48,12 +49,17 @@ public class GamePreferences {
         boardSizeDefaultSelection = preferences.getInt("boardSizeDefaultSelection", 1);
         guaranteeRollOf6 = preferences.getBoolean("guaranteeRollOf6", false);
         lastCommand = preferences.getString("lastCommand", DEFAULT_STRING_VALUE);
+        serializedGame = preferences.getString("serializedGame", DEFAULT_STRING_VALUE);
 
         latestLoadHashCode = hashCode();
     }
 
     public void savePreferences() {
-        if (latestLoadHashCode == hashCode()) return; // looks like there are no changes
+        savePreferences(false);
+    }
+
+    private void savePreferences(boolean forcibly) {
+        if (!forcibly && latestLoadHashCode == hashCode()) return; // looks like there are no changes
 
         SharedPreferences.Editor editor = preferences.edit();
         editor.putString("serverAddress", serverAddress);
@@ -69,6 +75,7 @@ public class GamePreferences {
         editor.putInt("boardSizeDefaultSelection", boardSizeDefaultSelection);
         editor.putBoolean("guaranteeRollOf6", guaranteeRollOf6);
         editor.putString("lastCommand", lastCommand);
+        editor.putString("serializedGame", serializedGame);
         editor.apply();
     }
 
@@ -128,6 +135,10 @@ public class GamePreferences {
         return lastCommand;
     }
 
+    public String getSerializedGame() {
+        return serializedGame;
+    }
+
     public void setServerAddress(String serverAddress) {
         this.serverAddress = serverAddress;
     }
@@ -180,6 +191,15 @@ public class GamePreferences {
         this.lastCommand = lastCommand;
     }
 
+    /*
+     * The sole setter method that immediately saves the change(s) to disk.
+     */
+    public void setSerializedGame(String serializedGame) {
+        this.serializedGame = serializedGame;
+
+        savePreferences(true);
+    }
+
     @Override
     public int hashCode() {
         return Objects.hash(
@@ -195,7 +215,8 @@ public class GamePreferences {
                 difficultyDefaultSelection,
                 boardSizeDefaultSelection,
                 guaranteeRollOf6,
-                lastCommand
+                lastCommand,
+                serializedGame
         );
     }
 }

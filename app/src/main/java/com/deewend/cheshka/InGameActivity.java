@@ -69,8 +69,7 @@ public class InGameActivity extends CheshkaActivity {
         super.onResume();
 
         if (PacketHandler.getInstance().board == null) {
-            // android vendor-specific optimizations have reset the game state
-            // fixme
+            Helper.startActivity(this, );
         }
     }
 
@@ -218,6 +217,8 @@ public class InGameActivity extends CheshkaActivity {
         boolean enableCheckerButton = (myTurn && renderingDiceStill && board.getSpawningMove() != null);
         findViewById(R.id.roll_dice_button).setEnabled(enableDiceButton);
         findViewById(R.id.place_checker_button).setEnabled(enableCheckerButton);
+
+        Helper.serializeGame(preferences);
     }
 
     @Override
@@ -269,6 +270,10 @@ public class InGameActivity extends CheshkaActivity {
         }
 
         return DO_NOT_DISABLE;
+    }
+
+    public DiceView getDiceView() {
+        return diceView;
     }
 
     public boolean isDiceRolling() {

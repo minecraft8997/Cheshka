@@ -5,6 +5,8 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Rect;
+import android.os.Bundle;
+import android.os.Parcelable;
 import android.util.AttributeSet;
 
 import androidx.annotation.NonNull;
@@ -23,9 +25,9 @@ public class DiceView extends CheshkaView {
     public static final byte MODE_THINKING = 1;
     public static final byte MODE_ROLLING_EXACT_DIGIT = 2;
 
-    private static byte diceMode;
-    private static int diceDigit;
-    private static int diceFrame;
+    private byte diceMode;
+    private int diceDigit;
+    private int diceFrame;
 
     private Bitmap diceAtlas;
     private int width;
@@ -96,6 +98,31 @@ public class DiceView extends CheshkaView {
         setMeasuredDimension(width, height);
     }
 
+    @Nullable
+    @Override
+    protected Parcelable onSaveInstanceState() {
+        Bundle bundle = new Bundle();
+        bundle.putParcelable("superState", super.onSaveInstanceState());
+        bundle.putByte("diceMode", diceMode);
+        bundle.putInt("diceDigit", diceDigit);
+        bundle.putInt("diceFrame", diceFrame);
+
+        return bundle;
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Parcelable state) {
+        if (state instanceof Bundle) {
+            Bundle bundle = (Bundle) state;
+            state = bundle.getParcelable("superState");
+            diceMode = bundle.getByte("diceMode");
+            diceDigit = bundle.getInt("diceDigit");
+            diceFrame = bundle.getInt("diceFrame");
+        }
+
+        super.onRestoreInstanceState(state);
+    }
+
     @Override
     public void initialize() {
         initializeDiceAtlas();
@@ -104,18 +131,13 @@ public class DiceView extends CheshkaView {
         canvasRect = new Rect();
     }
 
-    public static void setDigit(int digit) {
+    public void setDigit(int digit) {
         diceDigit = digit;
     }
 
-    public static void setMode(byte mode) {
+    public void setMode(byte mode) {
         diceMode = mode;
         diceFrame = 0;
-    }
-
-    public static void reset() {
-        setDigit(0);
-        setMode(MODE_IDLE);
     }
 
     private void initializeDiceAtlas() {

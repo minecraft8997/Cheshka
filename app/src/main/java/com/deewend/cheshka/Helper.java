@@ -288,6 +288,23 @@ public class Helper {
     }
 
     /*
+     * Supported only in singleplayer mode.
+     */
+    public static void serializeGame(GamePreferences preferences) {
+        Board board = PacketHandler.getInstance().board;
+        if (board == null) return;
+
+        List<String> serializedGameObjects = new ArrayList<>();
+        serializedGameObjects.add(board.toString());
+        serializedGameObjects.add(Singleplayer._toString(true));
+
+        String serializedGame = listToString(serializedGameObjects);
+        if (preferences.getSerializedGame().equals(serializedGame)) return;
+
+        preferences.setSerializedGame(serializedGame);
+    }
+
+    /*
      * If expectedClassName == null, retrieve the return value with
      * Either#second and treat it as the className of the provided serialized object.
      *
@@ -347,20 +364,29 @@ public class Helper {
             Object obj = null;
             Object ctx = (ctxArr.length == 0 ? null : ctxArr[(i >= ctxArr.length ? 0 : i)]);
             switch (className) {
-                case "Piece":
+                case "Piece": {
                     obj = Board.Piece.deserialize(element);
+
                     break;
-                case "PossibleMove":
+                }
+                case "PossibleMove": {
                     obj = Board.deserializePossibleMove((Board) ctx, element);
+
                     break;
-                case "Board":
+                }
+                case "Board": {
                     obj = Board.deserialize(element);
+
                     break;
-                case "Singleplayer":
+                }
+                case "Singleplayer": {
                     Singleplayer.deserialize((CheshkaActivity) ctx, element);
+
                     break;
-                default:
+                }
+                default: {
                     throw new IllegalArgumentException("Unsupported className: " + className);
+                }
             }
             if (obj != null) result.add(obj);
         }

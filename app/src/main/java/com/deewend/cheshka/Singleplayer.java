@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Properties;
 
 public class Singleplayer {
-    public static final int NO_MOVE_DRAW_THRESHOLD = 1024;
+    public static final int NO_MOVE_DRAW_THRESHOLD = 256;
     public static final int MODE_NORMAL = 0;
     public static final int MODE_HARD = 1;
     public static final int MODE_NOTICEABLY_HARD = 2;
@@ -294,15 +294,16 @@ public class Singleplayer {
         timeoutDuration = 0L;
     }
 
-    public static String _toString() {
+    public static String _toString(boolean optimized) {
         return "Singleplayer{" +
                 "whiteColor=" + whiteColor +
                 ", mode=" + mode +
-                ", preMoveTimeout=" + preMoveTimeout +
-                ", playerHelpTimeout=" + playerHelpTimeout +
-                ", timeoutSince=" + timeoutSince +
-                ", timeoutDuration=" + timeoutDuration +
+                (optimized ? "" : ", preMoveTimeout=" + preMoveTimeout) +
+                (optimized ? "" : ", playerHelpTimeout=" + playerHelpTimeout) +
+                (optimized ? "" : ", timeoutSince=" + timeoutSince) +
+                (optimized ? "" : ", timeoutDuration=" + timeoutDuration) +
                 ", handler.gameStartTimestamp=" + PacketHandler.getInstance().gameStartTimestamp +
+                ", InGameActivity.resigned=" + InGameActivity.resigned +
                 '}';
     }
 
@@ -311,7 +312,11 @@ public class Singleplayer {
 
         boolean whiteColor = Boolean.parseBoolean(props.getProperty("whiteColor"));
         int mode = Integer.parseInt(props.getProperty("mode"));
+        long gameStartTimestamp = Long.parseLong(props.getProperty("handler.gameStartTimestamp"));
+        boolean resigned = Boolean.parseBoolean(props.getProperty("InGameActivity.resigned"));
 
         init0(context, whiteColor, mode);
+        PacketHandler.getInstance().gameStartTimestamp = gameStartTimestamp;
+        InGameActivity.resigned = resigned;
     }
 }
