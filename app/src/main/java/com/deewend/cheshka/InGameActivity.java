@@ -69,7 +69,7 @@ public class InGameActivity extends CheshkaActivity {
         super.onResume();
 
         if (PacketHandler.getInstance().board == null) {
-            Helper.startActivity(this, );
+            Helper.startActivity(this, ContextLostActivity.class);
         }
     }
 
