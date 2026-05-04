@@ -96,7 +96,7 @@ public abstract class Packet {
             } else if (type == String.class) {
                 field.set(packet, Helper.readString(stream));
             } else if (type == Bitmap.class) {
-                field.set(packet, Helper.readBitmap(stream));
+                field.set(packet, Helper.readSimpleBitmap(stream));
             } else {
                 throw new RuntimeException("Unsupported packet field type: " + type);
             }

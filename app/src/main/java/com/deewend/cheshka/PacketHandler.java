@@ -4,6 +4,8 @@ import android.graphics.Bitmap;
 import android.util.Log;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AlertDialog;
+
 import java.io.IOException;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
@@ -68,7 +70,7 @@ public class PacketHandler {
             int oldCount = suspiciousEvents;
             handle0(activity, packet, additionalData);
             if (suspiciousEvents == oldCount) {
-                suspiciousEvents = 0;
+                suspiciousEvents = Math.max(suspiciousEvents - 1, 0);
             } else {
                 String packetName = (packet != null ? packet.getClass().getName() : "packet");
                 Log.w(TAG, (noActivity ? "Unhandled " : "Unexpected ") + packetName);
@@ -130,6 +132,13 @@ public class PacketHandler {
             }
             IdentificationResult clientIdentification = (IdentificationResult) packet;
             identified = clientIdentification.success;
+
+            AlertDialog dialog;
+            if (activity instanceof LauncherActivity &&
+                    (dialog = ((LauncherActivity) activity).getMultiplayerDialog()) != null
+            ) {
+                dialog.dismiss();
+            }
 
             if (!identified) {
                 if (activity instanceof CaptchaChallengeActivity) {
@@ -230,7 +239,10 @@ public class PacketHandler {
 
             inGameActivityStartTimestamp = System.currentTimeMillis();
         } else if (packet instanceof OpponentNotFound) {
-            if (activity instanceof InGameActivity) {
+            if (!identified || activity instanceof InGameActivity ||
+                    (activity instanceof HomeMenuActivity &&
+                            !((HomeMenuActivity) activity).hasInitiatedMatchmaking())
+            ) {
                 suspiciousEvents++;
 
                 return;
@@ -257,7 +269,7 @@ public class PacketHandler {
 
                 return;
             }
-            board.diceRolled(diceRolled.value);
+            if (board.diceRolled(diceRolled.value) == null) suspiciousEvents++;
         } else if (packet instanceof MakeMove) {
             if (board == null) {
                 suspiciousEvents++;
@@ -266,7 +278,7 @@ public class PacketHandler {
             }
             MakeMove makeMove = (MakeMove) packet;
 
-            board.makeMove(makeMove, makeMove.whitesMove);
+            if (board.makeMove(makeMove, makeMove.whitesMove) == null) suspiciousEvents++;
         } else { // this is a Resign packet
             if (resignsReceived >= 2 || board == null) {
                 suspiciousEvents++;

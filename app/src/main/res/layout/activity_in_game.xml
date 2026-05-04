@@ -12,7 +12,7 @@
         android:layout_height="wrap_content"
         android:textStyle="bold" />
 
-    <com.deewend.cheshka.DiceView
+    <com.deewend.cheshka.RestorableDiceView
         android:id="@+id/dice_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -22,7 +22,7 @@
     <com.deewend.cheshka.BoardView
         android:id="@+id/board_view"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         android:layout_weight="1"
         android:layout_gravity="center"
         android:contentDescription="@string/chess_board_text"
@@ -67,9 +67,26 @@
             android:text="@string/place_checker_text" />
     </LinearLayout>
 
-    <Button
-        android:id="@+id/resign_button"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/resign_text" />
+        android:orientation="horizontal"
+        android:weightSum="2"
+        tools:ignore="ButtonStyle">
+
+        <Button
+            android:id="@+id/view_stats"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/view_stats_text"
+            android:visibility="gone" />
+
+        <Button
+            android:id="@+id/resign_button"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="2"
+            android:text="@string/resign_text" />
+    </LinearLayout>
 </LinearLayout>

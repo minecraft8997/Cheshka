@@ -234,6 +234,10 @@ public class Board {
     private final int blacksSpawnPosition;
     private final int blacksDiagonalStartPlusOne;
     private final List<Piece> pieces = new ArrayList<>();
+    private final int[] whitesStats = new int[6];
+    private final int[] whitesOverallStats = new int[6];
+    private final int[] blacksStats = new int[6];
+    private final int[] blacksOverallStats = new int[6];
     private boolean allowVaults;
     private int moveNumber = 1;
     private int subMoveNumber = 1;
@@ -469,8 +473,8 @@ public class Board {
         return totalRemaining;
     }
 
-    public void diceRolled(int digit) {
-        rollDice0(digit);
+    public DiceRolled diceRolled(int digit) {
+        return rollDice0(digit);
     }
 
     public DiceRolled rollDice() {
@@ -491,6 +495,19 @@ public class Board {
                 possibleMoves.add(new PossibleMove(piece, lastCalculatedDestination));
             }
         }
+        int[] stats;
+        int[] overallStats;
+        int idx = digit - 1;
+        if (whitesTurn) {
+            stats = whitesStats;
+            overallStats = whitesOverallStats;
+        } else {
+            stats = blacksStats;
+            overallStats = blacksOverallStats;
+        }
+        overallStats[idx]++;
+        if (!possibleMoves.isEmpty()) stats[idx]++;
+
         lastDiceRollResult = new Pair<>(digit, possibleMoves);
         DiceRolled packet = new DiceRolled();
         packet.value = (byte) digit;
@@ -816,6 +833,22 @@ public class Board {
         return blacksSpawnPosition;
     }
 
+    public int[] getWhitesStats() {
+        return whitesStats;
+    }
+
+    public int[] getWhitesOverallStats() {
+        return whitesOverallStats;
+    }
+
+    public int[] getBlacksStats() {
+        return blacksStats;
+    }
+
+    public int[] getBlacksOverallStats() {
+        return blacksOverallStats;
+    }
+
     public long getLastActionTimestamp() {
         return lastActionTimestamp;
     }
@@ -862,6 +895,10 @@ public class Board {
                 ", blacksSpawnPosition=" + blacksSpawnPosition +
                 ", blacksDiagonalStartPlusOne=" + blacksDiagonalStartPlusOne +
                 ", pieces=" + Helper.listToString(pieces) +
+                ", whitesStats=" + Helper.intArrayToString(whitesStats) +
+                ", whitesOverallStats=" + Helper.intArrayToString(whitesOverallStats) +
+                ", blacksStats=" + Helper.intArrayToString(blacksStats) +
+                ", blacksOverallStats=" + Helper.intArrayToString(blacksOverallStats) +
                 ", allowVaults=" + allowVaults +
                 ", moveNumber=" + moveNumber +
                 ", subMoveNumber=" + subMoveNumber +
@@ -911,6 +948,13 @@ public class Board {
         List<Piece> pieces = (List<Piece>)
                 Helper.deserializeList(props.getProperty("pieces"), board);
         board.pieces.addAll(pieces);
+
+        Helper.deserializeIntArray(board.whitesStats, props.getProperty("whitesStats"));
+        Helper.deserializeIntArray(board.whitesOverallStats,
+                props.getProperty("whitesOverallStats"));
+        Helper.deserializeIntArray(board.blacksStats, props.getProperty("blacksStats"));
+        Helper.deserializeIntArray(board.blacksOverallStats,
+                props.getProperty("blacksOverallStats"));
 
         board.allowVaults = Boolean.parseBoolean(props.getProperty("allowVaults"));
         board.moveNumber = Integer.parseInt(props.getProperty("moveNumber"));

@@ -58,7 +58,7 @@
     <string name="no_moves_text">ходов нет</string>
     <string name="disconnected_title_text">Соединение прервано</string>
     <string name="reconnect_text">Переподключиться</string>
-    <string name="goto_main_menu_text">Вернуться в главное меню</string>
+    <string name="main_menu_text">Главное меню</string>
     <string name="synchronization_issue_text">" Ошибка синхронизации. Переподключитесь, если это необходимо"</string>
     <string name="details_text">Описание проблемы: %s\nДополнительная информация: %s</string>
     <string name="not_specified_text">&lt;отсутствует&gt;</string>
@@ -105,9 +105,9 @@
     <string name="execute_command_text">Выполнить команду</string>
     <string name="cmd_should_start_with">Команды должны начинаться с символа \'!\'</string>
     <string name="bad_configuration_text">Пожалуйста, отключите эту опцию для игры в \"Ощутимо сложный\" режим</string>
-    <string name="empty_server_address_text">Пожалуйста, укажите адрес сервера (например, playcheshka.ru)</string>
-    <string name="huawei_notification_text">Эта сборка игры предназначена для HUAWEI AppGallery. Здесь присутствует возможность подключения только к официальному серверу игры (playcheshka.ru). Для получения возможности игры на сторонних серверах, пожалуйста, загрузите игру из другого официального источника (подробнее на <a href="https://cheshka.deewend.com/">https://cheshka.deewend.com/</a>).</string>
-    <string name="third_party_servers_warning_text">Обратите внимание, что контент на сторонних серверах (отличных от playcheshka.ru), как правило, не подвергается оценке. Имена пользователей не подвергаются предварительной модерации в том числе и на официальном сервере. Авторы игры не могут нести ответственность за эти виды контента. Сетевой протокол игры не поддерживает шифрование и/или верификацию целостности данных/контента. Может быть рекомендован родительский контроль.</string>
+    <string name="empty_server_address_text">Пожалуйста, укажите адрес сервера (например, playcheshka.deewend.com)</string>
+    <string name="huawei_notification_text">Эта сборка игры предназначена для HUAWEI AppGallery. Здесь присутствует возможность подключения только к официальному серверу игры.</string>
+    <string name="third_party_servers_warning_text">Режим сетевой игры поддерживает подключение к серверам, созданным пользователями. Контент на этих площадках, включая имена игроков и сообщения серверов, не модерируется разработчиком. Вы можете столкнуться с нежелательным контентом. Подключайтесь только к серверам, которым доверяете.</string>
     <string name="credentials_title_text">Последние сохранённые данные для подключения</string>
     <string name="credentials_text">Текст ниже можно скопировать.\n\nАдрес сервера: %s\nПорт сервера: %s\nИмя пользователя: %s\nUUID: %s</string>
     <string name="delete_uuid_text">Удалить UUID локально</string>
@@ -116,4 +116,6 @@
     <string name="context_lost_title_text">Контекст игры утерян</string>
     <string name="context_lost_text">Операционная система Вашего устройства (скорее всего, её функции по энергосбережению) привели к некорректной остановке работы игры. Не волнуйтесь: Cheshka может восстановить состояние игры.\n\nЕсли это была одиночная игра, перейдите в главное меню, нажмите на кнопку \"Одиночная игра\", – Вам будет предложено загрузить предыдущую сессию.\nЕсли это была сетевая игра, переподключитесь к серверу и Вы автоматически вернётесь к игре, если она всё ещё идёт.</string>
     <string name="dice_face_view_description_text">Сколько раз выпало %d?</string>
+    <string name="press_back_to_return_text">Нажмите кнопку \"Назад\", чтобы вернуться к игре</string>
+    <string name="view_stats_text">Статистика</string>
 </resources>

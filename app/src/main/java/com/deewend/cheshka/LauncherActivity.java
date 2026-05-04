@@ -32,6 +32,7 @@ public class LauncherActivity extends CheshkaActivity {
     private int touchCount;
     private long lastTouchTimestamp;
     private boolean shownCommandMenu;
+    private AlertDialog multiplayerDialog;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -111,7 +112,7 @@ public class LauncherActivity extends CheshkaActivity {
         if (id == R.id.multiplayer_button) {
             showMultiplayerDialog();
 
-            return DO_NOT_DISABLE;
+            return DISABLE_CURRENT_BUTTON;
         }
         if (id == R.id.settings_button) {
             showSettingsDialog();
@@ -125,7 +126,8 @@ public class LauncherActivity extends CheshkaActivity {
             if (command.startsWith("!")) {
                 processCommand(command.substring(1), false);
             } else {
-                Toast.makeText(this, R.string.cmd_should_start_with, Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, R.string.cmd_should_start_with,
+                        Toast.LENGTH_SHORT).show();
             }
 
             return DO_NOT_DISABLE;
@@ -268,7 +270,13 @@ public class LauncherActivity extends CheshkaActivity {
         }
         dialog.dismiss();
 
-        Singleplayer.init(this, boardSize, difficultySelection, guaranteeRollOf6, null);
+        Singleplayer.init(
+                this,
+                boardSize,
+                difficultySelection,
+                guaranteeRollOf6,
+                null
+        );
     }
 
     private void showMultiplayerDialog() {
@@ -277,7 +285,7 @@ public class LauncherActivity extends CheshkaActivity {
         builder.setView(getMultiplayerOptionsView());
         Helper.defaultNegativeButton(builder);
 
-        builder.create().show();
+        (multiplayerDialog = builder.create()).show();
     }
 
     private void showSettingsDialog() {
@@ -336,13 +344,15 @@ public class LauncherActivity extends CheshkaActivity {
                 return;
             }
             String serverAddressStr = (String) serverAddress;
-            int serverPortInt = (int) serverPort;
+            int serverPortInt = (serverPort ==
+                    Helper.NOT_SPECIFIED ? Helper.DEFAULT_SERVER_PORT : (int) serverPort);
             if (Cheshka.APPGALLERY_BUILD) {
                 serverAddressStr = getString(R.string.server_address_example);
-                serverPortInt = Integer.parseInt(getString(R.string.server_port_example));
+                serverPortInt = Helper.DEFAULT_SERVER_PORT;
             }
             if (serverAddressStr.isEmpty()) {
-                Toast.makeText(this, R.string.empty_server_address_text, Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, R.string.empty_server_address_text,
+                        Toast.LENGTH_SHORT).show();
 
                 return;
             }
@@ -394,7 +404,8 @@ public class LauncherActivity extends CheshkaActivity {
         movementAnimationCheckbox.setChecked(preferences.shouldEnableMovementAnimation());
         movementAnimationCheckbox.setOnCheckedChangeListener(checkBoxListener);
 
-        CheckBox specialHighlightingCheckbox = view.findViewById(R.id.special_highlighting_checkbox);
+        CheckBox specialHighlightingCheckbox =
+                view.findViewById(R.id.special_highlighting_checkbox);
         specialHighlightingCheckbox.setChecked(preferences.shouldEnableSpecialHighlighting());
         specialHighlightingCheckbox.setOnCheckedChangeListener(checkBoxListener);
 
@@ -472,6 +483,7 @@ public class LauncherActivity extends CheshkaActivity {
         String stringValue = Helper.getEditTextStringValue(from, resId);
         if (string) return stringValue;
 
+        if (stringValue.isEmpty()) return Helper.NOT_SPECIFIED;
         int intValue;
         try {
             intValue = Integer.parseInt(stringValue);
@@ -488,5 +500,9 @@ public class LauncherActivity extends CheshkaActivity {
         }
 
         return false;
+    }
+
+    public AlertDialog getMultiplayerDialog() {
+        return multiplayerDialog;
     }
 }

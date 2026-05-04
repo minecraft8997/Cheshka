@@ -5,8 +5,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Rect;
-import android.os.Bundle;
-import android.os.Parcelable;
 import android.util.AttributeSet;
 
 import androidx.annotation.NonNull;
@@ -25,9 +23,9 @@ public class DiceView extends CheshkaView {
     public static final byte MODE_THINKING = 1;
     public static final byte MODE_ROLLING_EXACT_DIGIT = 2;
 
-    private byte diceMode;
-    private int diceDigit;
-    private int diceFrame;
+    protected byte diceMode;
+    protected int diceDigit;
+    protected int diceFrame;
 
     private Bitmap diceAtlas;
     private int width;
@@ -96,31 +94,6 @@ public class DiceView extends CheshkaView {
         height = diceAtlas.getHeight() / SPRITE_COUNT_Y;
 
         setMeasuredDimension(width, height);
-    }
-
-    @Nullable
-    @Override
-    protected Parcelable onSaveInstanceState() {
-        Bundle bundle = new Bundle();
-        bundle.putParcelable("superState", super.onSaveInstanceState());
-        bundle.putByte("diceMode", diceMode);
-        bundle.putInt("diceDigit", diceDigit);
-        bundle.putInt("diceFrame", diceFrame);
-
-        return bundle;
-    }
-
-    @Override
-    protected void onRestoreInstanceState(Parcelable state) {
-        if (state instanceof Bundle) {
-            Bundle bundle = (Bundle) state;
-            state = bundle.getParcelable("superState");
-            diceMode = bundle.getByte("diceMode");
-            diceDigit = bundle.getInt("diceDigit");
-            diceFrame = bundle.getInt("diceFrame");
-        }
-
-        super.onRestoreInstanceState(state);
     }
 
     @Override

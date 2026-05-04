@@ -56,12 +56,12 @@ public abstract class CheshkaActivity extends AppCompatActivity {
     }
 
     protected final void runCheshkaViews(int... viewResIds) {
-        for (int resId : viewResIds) {
-            CheshkaView view = findViewById(resId);
+        for (int resId : viewResIds) runCheshkaView(findViewById(resId));
+    }
 
-            view.linkActivity();
-            view.setRunning(true);
-        }
+    protected final void runCheshkaView(CheshkaView view) {
+        view.linkActivity();
+        view.setRunning(true);
     }
 
     protected final void restoreButton(int id, Bundle savedInstanceState) {

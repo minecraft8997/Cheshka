@@ -1,10 +1,12 @@
 package com.deewend.cheshka;
 
+import android.content.Intent;
 import android.content.res.AssetFileDescriptor;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -47,6 +49,7 @@ public class InGameActivity extends CheshkaActivity {
 
         restoreButton(R.id.roll_dice_button, savedInstanceState);
         restoreButton(R.id.place_checker_button, savedInstanceState);
+        restoreButton(R.id.view_stats, savedInstanceState);
         restoreButton(R.id.resign_button, savedInstanceState);
 
         diceRollPlayers = new MediaPlayer[DICE_ROLL_SOUNDS.length];
@@ -62,6 +65,11 @@ public class InGameActivity extends CheshkaActivity {
         }
 
         diceView = findViewById(R.id.dice_view);
+        diceView.setOnClickListener((v) -> {
+            if (findViewById(R.id.roll_dice_button).isEnabled()) {
+                onClick(R.id.roll_dice_button, null);
+            }
+        });
     }
 
     @Override
@@ -143,8 +151,10 @@ public class InGameActivity extends CheshkaActivity {
                 findViewById(R.id.roll_dice_button).setEnabled(false);
                 findViewById(R.id.place_checker_button).setEnabled(false);
 
-                ((Button) findViewById(R.id.resign_button))
-                        .setText(getString(R.string.goto_main_menu_text));
+                Button resignButton = findViewById(R.id.resign_button);
+                changeWeight(resignButton, 1.0f);
+                resignButton.setText(getString(R.string.main_menu_text));
+                findViewById(R.id.view_stats).setVisibility(View.VISIBLE);
 
                 resignButtonRenamed = true;
             }
@@ -221,11 +231,20 @@ public class InGameActivity extends CheshkaActivity {
         Helper.serializeGame(preferences);
     }
 
+    /** @noinspection SameParameterValue*/
+    private void changeWeight(View view, float newWeight) {
+        LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) view.getLayoutParams();
+        params.weight = newWeight;
+        view.setLayoutParams(params);
+    }
+
     @Override
     protected byte onClick(int id, Button button) {
         PacketHandler handler = PacketHandler.getInstance();
         Board board = handler.board;
-        if (id != R.id.resign_button && board.getGameState() != Board.GAME_STATE_RUNNING) {
+        if (id != R.id.view_stats && id != R.id.resign_button &&
+                board.getGameState() != Board.GAME_STATE_RUNNING
+        ) {
             toast(R.string.game_already_ended_text);
 
             return DO_NOT_DISABLE;
@@ -248,12 +267,30 @@ public class InGameActivity extends CheshkaActivity {
             }
         } else {
             if (resignButtonRenamed) {
-                if (handler.singleplayer) {
-                    handler.reset();
+                if (id == R.id.view_stats) {
+                    Intent intent = new Intent(this, StatisticsActivity.class);
+                    intent.putExtra("opponentName", handler.opponentDisplayName);
 
-                    Helper.startActivity(this, LauncherActivity.class);
-                } else {
-                    Helper.startActivity(this, HomeMenuActivity.class);
+                    boolean w = handler.whiteColor;
+                    intent.putExtra("myStats",
+                            (w ? board.getWhitesStats() : board.getBlacksStats()));
+                    intent.putExtra("myOverallStats",
+                            (w ? board.getWhitesOverallStats() : board.getBlacksOverallStats()));
+                    intent.putExtra("opponentStats",
+                            (w ? board.getBlacksStats() : board.getWhitesStats()));
+                    intent.putExtra("opponentOverallStats",
+                            (w ? board.getBlacksOverallStats() : board.getWhitesOverallStats()));
+
+                    // not using Helper.startActivity to make sure the "Back" button will work
+                    startActivity(intent);
+                } else { // "Main menu" button was clicked
+                    if (handler.singleplayer) {
+                        handler.reset();
+
+                        Helper.startActivity(this, LauncherActivity.class);
+                    } else {
+                        Helper.startActivity(this, HomeMenuActivity.class);
+                    }
                 }
             } else {
                 AlertDialog.Builder builder = new AlertDialog.Builder(this);

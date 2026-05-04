@@ -55,5 +55,9 @@
         <activity
             android:name=".ContextLostActivity"
             android:exported="false" />
+
+        <activity
+            android:name=".StatisticsActivity"
+            android:exported="false" />
     </application>
 </manifest>

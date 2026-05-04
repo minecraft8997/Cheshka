@@ -43,7 +43,7 @@ public class CrashReport {
 
     private Thread.UncaughtExceptionHandler oldHandler;
     @SuppressWarnings("unused")
-    private volatile byte[] reserved = new byte[32768];
+    private volatile byte[] reserved = new byte[16384];
     private final String manufacturer = Build.MANUFACTURER;
     private final String model = Build.MODEL;
     private final String androidVersion = Build.VERSION.RELEASE;

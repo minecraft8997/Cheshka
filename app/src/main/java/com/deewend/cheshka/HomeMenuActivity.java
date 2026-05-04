@@ -11,6 +11,8 @@ import androidx.annotation.Nullable;
 import com.deewend.cheshka.packet.InitiateMatchmaking;
 
 public class HomeMenuActivity extends CheshkaActivity {
+    private boolean initiatedMatchmaking;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -57,8 +59,16 @@ public class HomeMenuActivity extends CheshkaActivity {
 
             NetworkingThread.staticClose();
         }
-        if (!requestedDisconnect) NetworkingThread.staticSend(initiateMatchmaking);
+        if (!requestedDisconnect) {
+            initiatedMatchmaking = true;
+
+            NetworkingThread.staticSend(initiateMatchmaking);
+        }
 
         return DISABLE_ALL_BUTTONS;
+    }
+
+    public boolean hasInitiatedMatchmaking() {
+        return initiatedMatchmaking;
     }
 }

@@ -1,9 +1,8 @@
 <resources>
     <string name="app_name">Cheshka</string>
     <string name="server_address_text">Server address:</string>
-    <string name="server_address_example" translatable="false">playcheshka.ru</string>
+    <string name="server_address_example" translatable="false">playcheshka.deewend.com</string>
     <string name="server_port_text">Server port:</string>
-    <string name="server_port_example" translatable="false">23829</string>
     <string name="username_text">Preferred username:</string>
     <string name="username_example" translatable="false">Vasily123</string>
     <string name="solve_captcha_text">The server asks to prove you are not a robot:</string>
@@ -60,7 +59,7 @@
     <string name="no_moves_text">no possible moves</string>
     <string name="disconnected_title_text">Disconnected</string>
     <string name="reconnect_text">Reconnect</string>
-    <string name="goto_main_menu_text">Go to main menu</string>
+    <string name="main_menu_text">Main menu</string>
     <string name="synchronization_issue_text">A synchronization issue might have been occurred. Reconnect if needed</string>
     <string name="details_text">Issue details: %s\nAdditional information: %s</string>
     <string name="not_specified_text">&lt;not specified&gt;</string>
@@ -109,9 +108,9 @@
     <string name="execute_command_text">Execute command</string>
     <string name="cmd_should_start_with">Commands should start with \'!\' symbol</string>
     <string name="bad_configuration_text">Please uncheck this option in order to play \"Noticeably hard\" mode</string>
-    <string name="empty_server_address_text">Please specify server address (for example, playcheshka.ru)</string>
-    <string name="huawei_notification_text">This game build is designed for HUAWEI AppGallery. Only official game server (playcheshka.ru) is supported. In order to be able to connect to third-party servers, please obtain the game from another official source (more at <a href="https://cheshka.deewend.com/">https://cheshka.deewend.com/</a>).</string>
-    <string name="third_party_servers_warning_text">Please note that content on third-party servers (other than playcheshka.ru) is generally not reviewed. Usernames are not pre-moderated, even on the official server. The developers cannot accept responsibility for these types of content. The game\'s network protocol does not support encryption and/or data/content integrity verification. Parental guidance may be recommended.</string>
+    <string name="empty_server_address_text">Please specify server address (for example, playcheshka.deewend.com)</string>
+    <string name="huawei_notification_text">This game build is designed for HUAWEI AppGallery. Only official game server is supported.</string>
+    <string name="third_party_servers_warning_text">Multiplayer mode allows you to connect to user-hosted servers. Content on these servers, including usernames and server messages, is not moderated by the developer. You may encounter inappropriate or unexpected content. Please connect only to servers you trust.</string>
     <string name="credentials_title_text">Last saved credentials</string>
     <string name="credentials_text">The following text is copyable.\n\nServer address: %s\nServer port: %s\nUsername: %s\nUUID: %s</string>
     <string name="delete_uuid_text">Delete UUID locally</string>
@@ -120,4 +119,6 @@
     <string name="context_lost_title_text">Game context lost</string>
     <string name="context_lost_text">The operating system of your device (likely, its power-saving features) has incorrectly terminated the game. Do not worry: Cheshka is able to recover your game state.\n\nIf it was a singleplayer game, go to the main menu, press the \"Singleplayer\" button and you will be asked if you want to restore your previous session.\nIf it was a multiplayer game, reconnect to the server and you will automatically return to the game if it is still running.</string>
     <string name="dice_face_view_description_text">How many times was %d rolled?</string>
+    <string name="press_back_to_return_text">Press the \"Back\" button to return to the game</string>
+    <string name="view_stats_text">Statistics</string>
 </resources>

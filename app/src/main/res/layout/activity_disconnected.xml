@@ -37,6 +37,6 @@
             android:id="@+id/goto_main_menu_button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/goto_main_menu_text" />
+            android:text="@string/main_menu_text" />
     </LinearLayout>
 </ScrollView>

@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -29,6 +28,7 @@ import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.Properties;
 import java.util.UUID;
 import java.util.zip.CRC32;
@@ -39,12 +39,14 @@ public class Helper {
     public static final String DEFAULT_STRING_VALUE = "";
     public static final int DEFAULT_INT_VALUE = 0;
     public static final Object BAD_VALUE = new Object();
+    public static final Object NOT_SPECIFIED = new Object();
     public static final int NO_REASON = 0;
 
     public static final String NULL_UUID = "00000000-0000-0000-0000-000000000000";
     public static final UUID NULL_UUID_OBJ = UUID.fromString(NULL_UUID);
 
     public static final int MAX_FIELD_SIZE = 65535;
+    public static final int DEFAULT_SERVER_PORT = 23829;
 
     /*
      * 11 is an attempt to represent H;
@@ -156,10 +158,10 @@ public class Helper {
         writeByteArray(stream, contents);
     }
 
-    public static Bitmap readBitmap(DataInputStream stream) throws IOException {
+    public static Bitmap readSimpleBitmap(DataInputStream stream) throws IOException {
         byte[] contents = readByteArray(stream);
 
-        return BitmapFactory.decodeByteArray(contents, 0, contents.length);
+        return SimpleBitmapDecoder.decode(contents);
     }
 
     public static void disconnect(CheshkaActivity activity, IOException exception, int reason) {
@@ -249,13 +251,24 @@ public class Helper {
     }
 
     public static String listToString(List<?> list) {
-        if (list == null) list = Collections.EMPTY_LIST;
-
         StringBuilder builder = new StringBuilder();
         builder.append('[');
-        int size = list.size();
+        int size = (list == null ? 0 : list.size());
         for (int i = 0; i < size; i++) {
             builder.append(list.get(i).toString());
+            if (i < size - 1) builder.append(", ");
+        }
+        builder.append(']');
+
+        return builder.toString();
+    }
+
+    public static String intArrayToString(int[] arr) {
+        StringBuilder builder = new StringBuilder();
+        builder.append('[');
+        int size = (arr == null ? 0 : arr.length);
+        for (int i = 0; i < size; i++) {
+            builder.append(arr[i]);
             if (i < size - 1) builder.append(", ");
         }
         builder.append(']');
@@ -350,7 +363,32 @@ public class Helper {
         return Either.of(props);
     }
 
-    public static List<?> deserializeList(String str, Object...ctxArr) {
+    public static Long getSavedGameStartTime(String serializedGame) {
+        int propertyIdx = serializedGame.indexOf("handler.gameStartTimestamp");
+        if (propertyIdx == -1) return null;
+
+        serializedGame = serializedGame.substring(propertyIdx + 27);
+        if (!serializedGame.startsWith("=")) return null;
+
+        int digitsEndIdx = 1;
+        for (int i = 1; i < serializedGame.length(); i++) {
+            char current = serializedGame.charAt(i);
+            if (current < '0' || current > '9') break;
+            digitsEndIdx++;
+
+            // String.valueOf(Long.MAX_VALUE).length() is 19
+            if (digitsEndIdx > 20) return null;
+        }
+        if (digitsEndIdx == 1) return null;
+
+        try {
+            return Long.parseLong(serializedGame.substring(1, digitsEndIdx));
+        } catch (NumberFormatException e) {
+            return null;
+        }
+    }
+
+    public static List<?> deserializeList(String str, Object... ctxArr) {
         if (!str.startsWith("[") || !str.endsWith("]")) {
             throw new IllegalArgumentException("Not a list: " + str);
         }
@@ -359,6 +397,12 @@ public class Helper {
         List<Object> result = new ArrayList<>();
         for (int i = 0; i < unparsedElements.length; i++) {
             String element = unparsedElements[i];
+            try {
+                result.add(Integer.parseInt(element));
+
+                continue;
+            } catch (NumberFormatException ignored) {
+            }
             String className = objStringToData(element, null).second();
 
             Object obj = null;
@@ -392,5 +436,18 @@ public class Helper {
         }
 
         return result;
+    }
+
+    /** @noinspection unchecked*/
+    public static void deserializeIntArray(int[] to, String str) {
+        List<Integer> list = (List<Integer>) deserializeList(str);
+        int size = list.size();
+        if (to.length != size) throw new RuntimeException("Array length mismatch");
+
+        for (int i = 0; i < size; i++) to[i] = list.get(i);
+    }
+
+    public static void requireNonNull(String message, Object... refs) {
+        for (Object element : refs) Objects.requireNonNull(element, message);
     }
 }
