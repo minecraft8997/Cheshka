@@ -5,7 +5,9 @@ import android.content.DialogInterface;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.text.Html;
+import android.text.format.DateUtils;
 import android.text.method.LinkMovementMethod;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -20,7 +22,11 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 
+import java.util.List;
+
 public class LauncherActivity extends CheshkaActivity {
+    public static final String TAG = LauncherActivity.class.getName();
+
     public static final long TOUCH_MAX_DELTA = 1000L;
     public static final int TOUCHES_NEEDED_TO_SHOW_COMMAND_DISPATCHER = 5;
 
@@ -32,7 +38,7 @@ public class LauncherActivity extends CheshkaActivity {
     private int touchCount;
     private long lastTouchTimestamp;
     private boolean shownCommandMenu;
-    private AlertDialog multiplayerDialog;
+    private AlertDialog currentDialog;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -105,6 +111,11 @@ public class LauncherActivity extends CheshkaActivity {
     @Override
     protected byte onClick(int id, Button button) {
         if (id == R.id.singleplayer_button) {
+            if (!preferences.getSerializedGame().isEmpty()) {
+                showGameRecoveryDialog();
+
+                return DO_NOT_DISABLE;
+            }
             showSingleplayerDialog();
 
             return DO_NOT_DISABLE;
@@ -238,6 +249,14 @@ public class LauncherActivity extends CheshkaActivity {
         return src.substring((nextI + 1), endI);
     }
 
+    private void showGameRecoveryDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(R.string.game_recovery_dialog_title);
+        builder.setView(getRecoveryOptionsView());
+
+        (currentDialog = builder.create()).show();
+    }
+
     private void showSingleplayerDialog() {
         View optionsView = getSingleplayerOptionsView();
 
@@ -285,7 +304,7 @@ public class LauncherActivity extends CheshkaActivity {
         builder.setView(getMultiplayerOptionsView());
         Helper.defaultNegativeButton(builder);
 
-        (multiplayerDialog = builder.create()).show();
+        (currentDialog = builder.create()).show();
     }
 
     private void showSettingsDialog() {
@@ -295,6 +314,62 @@ public class LauncherActivity extends CheshkaActivity {
         builder.setNegativeButton(R.string.close_text, null);
 
         builder.create().show();
+    }
+
+    @SuppressLint("InflateParams")
+    private View getRecoveryOptionsView() {
+        View view = getLayoutInflater().inflate(R.layout.layout_recovery_options, null);
+
+        TextView recoveryDialog = view.findViewById(R.id.recovery_dialog_text);
+        Long gameStartTimestamp = Helper.getSavedGameStartTime(preferences.getSerializedGame());
+        String when = (gameStartTimestamp == null ?
+                getString(R.string.unknown_text) :
+                DateUtils.getRelativeTimeSpanString(gameStartTimestamp).toString().toLowerCase()
+        );
+        recoveryDialog.setText(getString(R.string.game_recovery_dialog_text, when));
+
+        view.findViewById(R.id.recovery_yes_button).setOnClickListener((v) -> {
+            dismissCurrentDialog();
+
+            if (!recoverGame()) {
+                Toast.makeText(this, R.string.recovery_error_text, Toast.LENGTH_LONG).show();
+
+                //preferences.setSerializedGame(Helper.DEFAULT_STRING_VALUE);
+            }
+        });
+        view.findViewById(R.id.recovery_later_button).setOnClickListener((v) -> {
+            dismissCurrentDialog();
+
+            showSingleplayerDialog();
+            Toast.makeText(this, R.string.recovery_later_warning_text, Toast.LENGTH_LONG)
+                    .show();
+        });
+        view.findViewById(R.id.recovery_no_button).setOnClickListener((v) -> {
+            dismissCurrentDialog();
+
+            showSingleplayerDialog();
+            preferences.setSerializedGame(Helper.DEFAULT_STRING_VALUE);
+        });
+
+        return view;
+    }
+
+    private boolean recoverGame() {
+        String serializedGame = preferences.getSerializedGame();
+        try {
+            List<?> result = Helper.deserializeList(serializedGame, this);
+            Board board = (Board) result.get(0);
+            PacketHandler handler = PacketHandler.getInstance();
+            handler.boardSize = board.getWhitesDiagonalStart() / 4 + 1;
+            handler.board = board;
+        } catch (RuntimeException e) {
+            Log.w(TAG, "Failed to deserialize a game: " + serializedGame, e);
+
+            return false;
+        }
+        Helper.startActivity(this, InGameActivity.class);
+
+        return true;
     }
 
     @SuppressLint("InflateParams")
@@ -502,7 +577,11 @@ public class LauncherActivity extends CheshkaActivity {
         return false;
     }
 
-    public AlertDialog getMultiplayerDialog() {
-        return multiplayerDialog;
+    public void dismissCurrentDialog() {
+        if (currentDialog != null) {
+            currentDialog.dismiss();
+
+            currentDialog = null;
+        }
     }
 }

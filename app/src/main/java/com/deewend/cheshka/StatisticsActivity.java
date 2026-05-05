@@ -80,4 +80,9 @@ public class StatisticsActivity extends CheshkaActivity {
             contents.addView(entry, i);
         }
     }
+
+    @Override
+    public void onBackPressed() {
+        onBackPressed0();
+    }
 }

@@ -4,8 +4,6 @@ import android.graphics.Bitmap;
 import android.util.Log;
 import android.widget.Toast;
 
-import androidx.appcompat.app.AlertDialog;
-
 import java.io.IOException;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
@@ -133,11 +131,8 @@ public class PacketHandler {
             IdentificationResult clientIdentification = (IdentificationResult) packet;
             identified = clientIdentification.success;
 
-            AlertDialog dialog;
-            if (activity instanceof LauncherActivity &&
-                    (dialog = ((LauncherActivity) activity).getMultiplayerDialog()) != null
-            ) {
-                dialog.dismiss();
+            if (activity instanceof LauncherActivity) {
+                ((LauncherActivity) activity).dismissCurrentDialog();
             }
 
             if (!identified) {

@@ -121,4 +121,12 @@
     <string name="dice_face_view_description_text">How many times was %d rolled?</string>
     <string name="press_back_to_return_text">Press the \"Back\" button to return to the game</string>
     <string name="view_stats_text">Statistics</string>
+    <string name="game_recovery_dialog_title">Game recovery</string>
+    <string name="game_recovery_dialog_text">Found an unfinished game that was started %s. Would you like to load it?</string>
+    <string name="yes_text">Yes</string>
+    <string name="recovery_later_text">Ask me later</string>
+    <string name="no_text">No, thanks</string>
+    <string name="recovery_error_text">Failed to recover your game, we apologize for the inconvenience</string>
+    <string name="unknown_text">&lt;unknown&gt;</string>
+    <string name="recovery_later_warning_text">Please note that starting a new game will result in losing previous progress</string>
 </resources>

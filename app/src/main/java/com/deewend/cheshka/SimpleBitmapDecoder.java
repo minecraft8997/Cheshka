@@ -21,7 +21,7 @@ public class SimpleBitmapDecoder {
             for (int j = 0; j < BYTES_IN_LINE; j++) {
                 int colors = image[i * BYTES_IN_LINE + j];
                 for (int x = 0; x < 8; x++) {
-                    int color = (getBit(colors, x) == 0 ? 0x0000 : 0xFFFFFF);
+                    int color = (getBit(colors, x) == 0 ? 0x000000 : 0xFFFFFF);
                     result.setPixel(j * 8 + x, i, color);
                 }
             }

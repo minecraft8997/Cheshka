@@ -348,10 +348,13 @@ public class Helper {
             throw new RuntimeException("US-ASCII is not supported by the device", e);
         }
         int braceLevel = 0;
+        boolean arr = false;
         for (int i = 0; i < contents.length; i++) {
             if (contents[i] == '{') braceLevel++;
+            else if (contents[i] == '[') arr = true;
             else if (contents[i] == '}') braceLevel = Math.max(braceLevel - 1, 0);
-            else if (contents[i] == ',' && braceLevel == 0) contents[i] = '\n';
+            else if (contents[i] == ']') arr = false;
+            else if (contents[i] == ',' && braceLevel == 0 && !arr) contents[i] = '\n';
         }
         Properties props = new Properties();
         try (InputStreamReader reader = new InputStreamReader(new ByteArrayInputStream(contents))) {
@@ -367,7 +370,7 @@ public class Helper {
         int propertyIdx = serializedGame.indexOf("handler.gameStartTimestamp");
         if (propertyIdx == -1) return null;
 
-        serializedGame = serializedGame.substring(propertyIdx + 27);
+        serializedGame = serializedGame.substring(propertyIdx + 26);
         if (!serializedGame.startsWith("=")) return null;
 
         int digitsEndIdx = 1;
@@ -384,19 +387,42 @@ public class Helper {
         try {
             return Long.parseLong(serializedGame.substring(1, digitsEndIdx));
         } catch (NumberFormatException e) {
+            e.printStackTrace();
             return null;
         }
     }
 
+    /** @noinspection ExtractMethodRecommender*/
     public static List<?> deserializeList(String str, Object... ctxArr) {
         if (!str.startsWith("[") || !str.endsWith("]")) {
             throw new IllegalArgumentException("Not a list: " + str);
         }
-        String[] unparsedElements = str.substring(1, str.length() - 1).split(", ");
+        str = str.substring(1, str.length() - 1);
+
+        int startI = 0;
+        char previousChar = str.charAt(0);
+        int braceLevel = 0;
+        List<String> unparsedElements = new ArrayList<>();
+        for (int i = 1; i < str.length(); i++) {
+            char currentChar = str.charAt(i);
+            if (currentChar == '{') braceLevel++;
+            else if (currentChar == '}') braceLevel = Math.max(braceLevel - 1, 0);
+            else if (previousChar == ',' && currentChar == ' ' && braceLevel == 0) {
+                unparsedElements.add(str.substring(startI, i - 1));
+                startI = i + 1;
+            }
+            previousChar = currentChar;
+        }
+        if (braceLevel != 0) {
+            throw new IllegalArgumentException("Unexpected braceLevel: " + braceLevel);
+        }
+        if (startI < str.length()) {
+            unparsedElements.add(str.substring(startI));
+        }
 
         List<Object> result = new ArrayList<>();
-        for (int i = 0; i < unparsedElements.length; i++) {
-            String element = unparsedElements[i];
+        for (int i = 0; i < unparsedElements.size(); i++) {
+            String element = unparsedElements.get(i);
             try {
                 result.add(Integer.parseInt(element));
 

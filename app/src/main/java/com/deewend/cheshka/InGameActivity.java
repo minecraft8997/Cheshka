@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.content.res.AssetFileDescriptor;
 import android.media.MediaPlayer;
 import android.os.Bundle;
+import android.util.Pair;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
@@ -14,6 +15,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import com.deewend.cheshka.packet.MakeMove;
@@ -156,6 +158,8 @@ public class InGameActivity extends CheshkaActivity {
                 resignButton.setText(getString(R.string.main_menu_text));
                 findViewById(R.id.view_stats).setVisibility(View.VISIBLE);
 
+                preferences.setSerializedGame(Helper.DEFAULT_STRING_VALUE);
+
                 resignButtonRenamed = true;
             }
 
@@ -183,6 +187,14 @@ public class InGameActivity extends CheshkaActivity {
 
             return;
         }
+        Pair<Integer, List<Board.PossibleMove>> rollResult = board.getLastDiceRollResult();
+        if (rollResult != null && diceView != null && diceView.diceMode == DiceView.MODE_IDLE) {
+            // probably just restored a game
+            playDiceRollSound();
+            diceView.setMode(DiceView.MODE_ROLLING_EXACT_DIGIT);
+            diceView.setDigit(rollResult.first);
+        }
+
         boolean myTurn = (handler.whiteColor == board.isWhitesTurn());
         String whoseTurn = (myTurn ?
                 getString(R.string.your_turn_fragment) : getString(R.string.opponents_turn_fragment)

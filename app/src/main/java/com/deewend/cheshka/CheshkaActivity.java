@@ -48,6 +48,10 @@ public abstract class CheshkaActivity extends AppCompatActivity {
         lastTimePressed = System.currentTimeMillis();
     }
 
+    protected final void onBackPressed0() {
+        super.onBackPressed();
+    }
+
     @Override
     protected void onResume() {
         super.onResume();

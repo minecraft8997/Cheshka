@@ -813,6 +813,10 @@ public class Board {
         return lastDiceRollResult.second;
     }
 
+    public Pair<Integer, List<PossibleMove>> getLastDiceRollResult() {
+        return lastDiceRollResult;
+    }
+
     public PossibleMove getSpawningMove() {
         for (Board.PossibleMove move : getPossibleMoves()) {
             if (move.isSpawningMove()) return move;
@@ -964,10 +968,17 @@ public class Board {
                 Integer.parseInt(props.getProperty("lastCalculatedDestination"));
         if (Boolean.parseBoolean(props.getProperty("hasLastDiceRollResult"))) {
             int digit = Integer.parseInt(props.getProperty("lastDiceRollResult.first"));
-            List<PossibleMove> possibleMoves = (List<PossibleMove>)
-                    Helper.deserializeList(props.getProperty("lastDiceRollResult.second"), board);
 
-            board.lastDiceRollResult = new Pair<>(digit, possibleMoves);
+            /*
+             * Not doing
+             * List<PossibleMove> possibleMoves = (List<PossibleMove>)
+             *         Helper.deserializeList(props.getProperty("lastDiceRollResult.second"), board)
+             *
+             * By parsing this list we'd have just created Piece clones that wouldn't be the same
+             * objects as those Pieces from the "board.pieces" list. This wouldn't work for BoardView
+             * and probably would fail in a lot of other cases.
+             */
+            board.rollDice0(digit);
         }
         board.noMovesCounter = Integer.parseInt(props.getProperty("noMovesCounter"));
         board.lastActionTimestamp = Long.parseLong(props.getProperty("lastActionTimestamp"));
