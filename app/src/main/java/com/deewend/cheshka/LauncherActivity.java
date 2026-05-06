@@ -334,7 +334,7 @@ public class LauncherActivity extends CheshkaActivity {
             if (!recoverGame()) {
                 Toast.makeText(this, R.string.recovery_error_text, Toast.LENGTH_LONG).show();
 
-                //preferences.setSerializedGame(Helper.DEFAULT_STRING_VALUE);
+                preferences.setSerializedGame(Helper.DEFAULT_STRING_VALUE);
             }
         });
         view.findViewById(R.id.recovery_later_button).setOnClickListener((v) -> {
