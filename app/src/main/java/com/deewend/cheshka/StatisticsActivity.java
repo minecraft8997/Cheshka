@@ -78,10 +78,10 @@ public class StatisticsActivity extends CheshkaActivity {
                 myOverallStat = myOverallStats[i];
                 opponentOverallStat = opponentOverallStats[i];
 
-                sumMyStat += myStat;
-                sumOpponentStat += opponentStat;
-                sumMyOverallStat += myOverallStat;
-                sumOpponentOverallStat += opponentOverallStat;
+                sumMyStat += myStat * n;
+                sumOpponentStat += opponentStat * n;
+                sumMyOverallStat += myOverallStat * n;
+                sumOpponentOverallStat += opponentOverallStat * n;
             }
             myCount.setText(String.valueOf(myStat));
             myOverallCount.setText("/" + myOverallStat);
