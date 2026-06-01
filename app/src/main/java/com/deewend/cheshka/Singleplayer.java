@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Properties;
 
 public class Singleplayer {
-    public static final int NO_MOVE_DRAW_THRESHOLD = 256;
+    public static final int NO_MOVE_DRAW_THRESHOLD = 16;
     public static final int MODE_NORMAL = 0;
     public static final int MODE_HARD = 1;
     public static final int MODE_NOTICEABLY_HARD = 2;
@@ -28,6 +28,7 @@ public class Singleplayer {
             CheshkaActivity context,
             int boardSize,
             int mode,
+            boolean shouldAddInitialPieces,
             boolean guaranteeRollOf6,
             Boolean whiteColor
     ) {
@@ -37,6 +38,13 @@ public class Singleplayer {
         handler.guaranteeRollOf6 = guaranteeRollOf6;
         handler.instantiateBoard();
         init0(context, (whiteColor == null ? handler.random.nextBoolean() : !whiteColor), mode);
+        if (shouldAddInitialPieces) {
+            Board board = PacketHandler.getInstance().board;
+            List<Board.Piece> pieces = board.getPieces();
+            pieces.add(new Board.Piece(true));
+            pieces.add((new Board.Piece(false))
+                    .setPosition(board.getBlacksSpawnPosition()));
+        }
 
         Helper.startActivity(context, InGameActivity.class);
     }
@@ -275,6 +283,10 @@ public class Singleplayer {
     private static void timeout(long durationMillis) {
         timeoutSince = System.currentTimeMillis();
         timeoutDuration = durationMillis;
+    }
+
+    public static boolean isBotWhiteColor() {
+        return whiteColor;
     }
 
     public static boolean isNoticeablyHard() {

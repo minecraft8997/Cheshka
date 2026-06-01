@@ -107,7 +107,7 @@
     <string name="command_example" translatable="false">!load size(12) white(0 1 2)</string>
     <string name="execute_command_text">Execute command</string>
     <string name="cmd_should_start_with">Commands should start with \'!\' symbol</string>
-    <string name="bad_configuration_text">Please uncheck this option in order to play \"Noticeably hard\" mode</string>
+    <string name="bad_configuration_text">Please uncheck 2 options above in order to play \"Noticeably hard\" mode</string>
     <string name="empty_server_address_text">Please specify server address (for example, playcheshka.deewend.com)</string>
     <string name="huawei_notification_text">This game build is designed for HUAWEI AppGallery. Only official game server is supported.</string>
     <string name="third_party_servers_warning_text">Multiplayer mode allows you to connect to user-hosted servers. Content on these servers, including usernames and server messages, is not moderated by the developer. You may encounter inappropriate or unexpected content. Please connect only to servers you trust.</string>
@@ -129,4 +129,8 @@
     <string name="recovery_error_text">Failed to recover your game, we apologize for the inconvenience</string>
     <string name="unknown_text">&lt;unknown&gt;</string>
     <string name="recovery_later_warning_text">Please note that starting a new game will result in losing previous progress</string>
+    <string name="show_user_generated_content_checkbox_text">Show user-generated content (multiplayer only)</string>
+    <string name="add_initial_pieces_text">Add the initial pieces (recommended for beginners)</string>
+    <string name="statistics_explanation_text">White numbers – times this face was used\nGrey numbers – total times this face was rolled\nPercentage difference is based on the white numbers</string>
+    <string name="sum_text">Sum</string>
 </resources>

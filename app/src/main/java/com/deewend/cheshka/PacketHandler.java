@@ -117,6 +117,7 @@ public class PacketHandler {
 
             return;
         }
+        GamePreferences preferences = Cheshka.getInstance(activity).getPreferences();
         boolean matchmakingOrInGame =
                 (activity instanceof MatchmakingActivity) || (activity instanceof InGameActivity);
 
@@ -148,8 +149,11 @@ public class PacketHandler {
                 Helper.startActivity(activity, CaptchaChallengeActivity.class);
             } else {
                 captcha = null;
-                displayName = clientIdentification.displayName;
-                GamePreferences preferences = Cheshka.getInstance(activity).getPreferences();
+                if (preferences.shouldShowUserGeneratedContent()) {
+                    displayName = clientIdentification.displayName;
+                } else {
+                    displayName = preferences.getUsername();
+                }
                 preferences.setClientId(clientIdentification.clientId);
                 preferences.savePreferences();
 
@@ -157,7 +161,7 @@ public class PacketHandler {
             }
         } else if (packet instanceof HomeData) {
             HomeData homeData = (HomeData) packet;
-            if (homeData.hasServerLogo) {
+            if (homeData.hasServerLogo && preferences.shouldShowUserGeneratedContent()) {
                 serverLogo = homeData.serverLogo;
             }
             onlinePlayerCount = homeData.onlinePlayerCount;
@@ -211,7 +215,11 @@ public class PacketHandler {
                 return;
             }
             OpponentFound opponentFound = (OpponentFound) packet;
-            opponentDisplayName = opponentFound.opponentDisplayName;
+            if (preferences.shouldShowUserGeneratedContent()) {
+                opponentDisplayName = opponentFound.opponentDisplayName;
+            } else {
+                opponentDisplayName = "?";
+            }
             boardSize = opponentFound.boardSize;
             secondsForTurn = opponentFound.secondsForTurn;
             noMoveDrawThreshold = opponentFound.noMoveDrawThreshold;

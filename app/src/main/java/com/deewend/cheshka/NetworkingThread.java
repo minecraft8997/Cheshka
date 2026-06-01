@@ -56,6 +56,7 @@ public class NetworkingThread extends Thread {
     private final int serverPort;
     private final String username;
     private final UUID clientId;
+    private final boolean showUserGeneratedContent;
 
     private volatile boolean socketOpened;
     private Socket socket;
@@ -71,6 +72,7 @@ public class NetworkingThread extends Thread {
         serverPort = preferences.getServerPort();
         username = preferences.getUsername();
         clientId = preferences.getClientId();
+        showUserGeneratedContent = preferences.shouldShowUserGeneratedContent();
 
         setName("Networking Thread");
         setDaemon(true);
@@ -157,7 +159,8 @@ public class NetworkingThread extends Thread {
         if (serverHello.magic != SERVER_HELLO_MAGIC) {
             throw new GameProtocolException(R.string.protocol_bad_magic_text);
         }
-        PacketHandler.getInstance().setMessageOfTheDay(serverHello.serverMOTD);
+        PacketHandler.getInstance()
+                .setMessageOfTheDay(showUserGeneratedContent ? serverHello.serverMOTD : "?");
 
         ClientIdentification identification = new ClientIdentification();
         identification.username = username;

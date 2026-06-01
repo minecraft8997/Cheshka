@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Path;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 
@@ -31,6 +32,8 @@ public class BoardView extends CheshkaView {
     private Paint redPieceBorderPaint;
     private Paint whitePieceReliefPaint;
     private Paint blackPieceReliefPaint;
+    private Paint crownPaint;
+    private Paint crownBorderPaint;
     private Paint highlightedCellPaint;
     private int strokeWidthSetFor;
     private int selectedCellX = NOT_SELECTED;
@@ -79,6 +82,7 @@ public class BoardView extends CheshkaView {
             redPieceBorderPaint.setStrokeWidth(borderWidth);
             whitePieceReliefPaint.setStrokeWidth(reliefWidth);
             blackPieceReliefPaint.setStrokeWidth(reliefWidth);
+            crownBorderPaint.setStrokeWidth(reliefWidth);
 
             strokeWidthSetFor = handler.boardSize;
         }
@@ -131,7 +135,8 @@ public class BoardView extends CheshkaView {
                     float x = intermediatePoint.x;
                     float y = intermediatePoint.y;
                     int opacity = intermediatePoint.getOpacity();
-                    drawPieceAt(canvas, whitePiece, x, y, true, opacity);
+                    boolean hasCrown = hasCrown(null, animation.isOwnPiece());
+                    drawPieceAt(canvas, whitePiece, x, y, true, hasCrown, opacity);
                 }
             }
         }
@@ -143,7 +148,8 @@ public class BoardView extends CheshkaView {
             int x = renderPos.first;
             int y = renderPos.second;
             boolean defaultBorder = !piece.isTurningOntoDiagonalLine(board);
-            drawPieceAt(canvas, piece.isWhitePiece(), x, y, defaultBorder, 255);
+            boolean hasCrown = hasCrown(piece, null);
+            drawPieceAt(canvas, piece.isWhitePiece(), x, y, defaultBorder, hasCrown, 255);
 
             if (x != selectedCellX || y != selectedCellY) continue;
             if (piece.isWhitePiece() != handler.whiteColor) continue;
@@ -169,7 +175,13 @@ public class BoardView extends CheshkaView {
     }
 
     private void drawPieceAt(
-            Canvas canvas, boolean whitePiece, float x, float y, boolean defaultBorder, int alpha
+            Canvas canvas,
+            boolean whitePiece,
+            float x,
+            float y,
+            boolean defaultBorder,
+            boolean hasCrown,
+            int alpha
     ) {
         float cx = adjustment + (x * cellSize) + cellSize / 2.0f;
         float cy = adjustment + (y * cellSize) + cellSize / 2.0f;
@@ -184,10 +196,53 @@ public class BoardView extends CheshkaView {
         reliefPaint.setAlpha(alpha);
         canvas.drawCircle(cx, cy, relief1Radius, reliefPaint);
         canvas.drawCircle(cx, cy, relief2Radius, reliefPaint);
+        if (hasCrown) {
+            crownPaint.setAlpha(alpha);
+            Path crownPath = buildCrownPath(x, y, cx, cy);
+            canvas.drawPath(crownPath, crownPaint);
+            crownBorderPaint.setAlpha(alpha);
+            canvas.drawPath(crownPath, crownBorderPaint);
+
+            crownPaint.setAlpha(oldAlpha);
+            crownBorderPaint.setAlpha(oldAlpha);
+        }
 
         piecePaint.setAlpha(oldAlpha);
         borderPaint.setAlpha(oldAlpha);
         reliefPaint.setAlpha(oldAlpha);
+    }
+
+    private Path buildCrownPath(float x, float y, float cx, float cy) {
+        float crStartY = cy - cellSize * 0.25f;
+        float hLY = (float) Math.sqrt(pieceRadius * pieceRadius - cellSize * cellSize * 0.0625f);
+        float crStartX = cx - hLY;
+        Path path = new Path();
+        path.moveTo(crStartX, crStartY);
+        float cBeginningX = adjustment + (x * cellSize);
+        float cBeginningY = adjustment + (y * cellSize);
+        path.lineTo(cBeginningX, cBeginningY);
+        float pt3 = cellSize / 3.0f;
+        float crownM = crStartY - cellSize * 0.125f;
+        path.lineTo(cBeginningX + pt3, crownM);
+        path.lineTo(cBeginningX + pt3 * 1.5f, cBeginningY);
+        path.lineTo(cBeginningX + pt3 * 2.0f, crownM);
+        path.lineTo(cBeginningX + cellSize, cBeginningY);
+        path.lineTo(cx + hLY, crStartY);
+        path.lineTo(crStartX, crStartY);
+        path.close();
+
+        return path;
+    }
+
+    private boolean hasCrown(Board.Piece piece, Boolean ownPiece) {
+        PacketHandler handler = PacketHandler.getInstance();
+        if (piece != null) ownPiece = (piece.isWhitePiece() == handler.whiteColor);
+
+        if (ownPiece) {
+            return "MTG".equals(Cheshka.getInstance(activity).getPreferences().getUsername());
+        }
+
+        return "MTG".equals(handler.opponentDisplayName);
     }
 
     @Override
@@ -262,12 +317,15 @@ public class BoardView extends CheshkaView {
             redPieceBorderPaint = rgbPaint(255, 0, 0);
             whitePieceReliefPaint = rgbPaint(191, 191, 191); // -64
             blackPieceReliefPaint = rgbPaint(64, 64, 64);
+            crownPaint = rgbPaint(255, 215, 0);
+            crownBorderPaint = rgbPaint(220, 190, 0);
             highlightedCellPaint = argbPaint(192, 255, 255, 0);
 
             pieceBorderPaint.setStyle(Paint.Style.STROKE);
             redPieceBorderPaint.setStyle(Paint.Style.STROKE);
             whitePieceReliefPaint.setStyle(Paint.Style.STROKE);
             blackPieceReliefPaint.setStyle(Paint.Style.STROKE);
+            crownBorderPaint.setStyle(Paint.Style.STROKE);
         }
     }
 

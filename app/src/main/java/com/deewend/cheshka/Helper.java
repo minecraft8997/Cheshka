@@ -366,6 +366,7 @@ public class Helper {
         return Either.of(props);
     }
 
+    /** @noinspection CallToPrintStackTrace*/
     public static Long getSavedGameStartTime(String serializedGame) {
         int propertyIdx = serializedGame.indexOf("handler.gameStartTimestamp");
         if (propertyIdx == -1) return null;
@@ -392,17 +393,18 @@ public class Helper {
         }
     }
 
-    /** @noinspection ExtractMethodRecommender*/
     public static List<?> deserializeList(String str, Object... ctxArr) {
         if (!str.startsWith("[") || !str.endsWith("]")) {
             throw new IllegalArgumentException("Not a list: " + str);
         }
         str = str.substring(1, str.length() - 1);
 
+        List<String> unparsedElements = new ArrayList<>();
+        if (str.isEmpty()) return unparsedElements;
+
         int startI = 0;
         char previousChar = str.charAt(0);
         int braceLevel = 0;
-        List<String> unparsedElements = new ArrayList<>();
         for (int i = 1; i < str.length(); i++) {
             char currentChar = str.charAt(i);
             if (currentChar == '{') braceLevel++;

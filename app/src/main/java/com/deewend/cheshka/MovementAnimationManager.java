@@ -34,10 +34,12 @@ public class MovementAnimationManager {
 
         private final List<Point> points;
         private final boolean whitePiece;
+        private final boolean ownPiece;
 
-        private Animation(List<Point> points, boolean whitePiece) {
+        private Animation(List<Point> points, boolean whitePiece, boolean ownPiece) {
             this.points = points;
             this.whitePiece = whitePiece;
+            this.ownPiece = ownPiece;
         }
 
         public boolean tick() {
@@ -51,12 +53,16 @@ public class MovementAnimationManager {
             return foundVisible;
         }
 
+        public List<Point> getPoints() {
+            return points;
+        }
+
         public boolean isWhitePiece() {
             return whitePiece;
         }
 
-        public List<Point> getPoints() {
-            return points;
+        public boolean isOwnPiece() {
+            return ownPiece;
         }
     }
 
@@ -79,7 +85,9 @@ public class MovementAnimationManager {
         return INSTANCE;
     }
 
-    public void registerAnimation(int x1, int y1, int x2, int y2, boolean whitePiece) {
+    public void registerAnimation(
+            int x1, int y1, int x2, int y2, boolean whitePiece, boolean ownPiece
+    ) {
         float distance = (float) Math.hypot(x2 - x1, y2 - y1);
         float dx = (x2 - x1) / distance * STEP;
         float dy = (y2 - y1) / distance * STEP;
@@ -99,7 +107,7 @@ public class MovementAnimationManager {
             intermediatePoints.add(point);
         }
 
-        activeAnimations.add(new Animation(intermediatePoints, whitePiece));
+        activeAnimations.add(new Animation(intermediatePoints, whitePiece, ownPiece));
     }
 
     public List<Animation> getActiveAnimations() {

@@ -181,6 +181,8 @@ public class LauncherActivity extends CheshkaActivity {
             String whitesPos = getArgument(command, "white");
             String blacksPos = getArgument(command, "black");
             //noinspection SpellCheckingInspection
+            boolean addInitialPieces = command.contains("addinitialpieces");
+            //noinspection SpellCheckingInspection
             boolean guaranteeRollOf6 = command.contains("guaranteerollof6");
             //noinspection SpellCheckingInspection
             boolean allowVaults = command.contains("allowvaults");
@@ -192,7 +194,9 @@ public class LauncherActivity extends CheshkaActivity {
             else if ("black".equals(color)) whiteColor = Boolean.FALSE;
             // else, the color will be chosen randomly
 
-            Singleplayer.init(this, boardSize, mode, guaranteeRollOf6, whiteColor);
+            Singleplayer.init(
+                    this, boardSize, mode, addInitialPieces, guaranteeRollOf6, whiteColor
+            );
 
             Board board = PacketHandler.getInstance().board;
             if (whitesPos != null) board.deserializePosition(true, whitesPos);
@@ -280,9 +284,12 @@ public class LauncherActivity extends CheshkaActivity {
 
     private void initSingleplayer(AlertDialog dialog, View optionsView) {
         int boardSize = 6 + boardSizeSelection * 2;
+        boolean addInitialPieces = preferences.shouldAddInitialPieces();
         boolean guaranteeRollOf6 = preferences.shouldGuaranteeRollOf6();
 
-        if (difficultySelection == Singleplayer.MODE_NOTICEABLY_HARD && guaranteeRollOf6) {
+        if (difficultySelection == Singleplayer.MODE_NOTICEABLY_HARD &&
+                (addInitialPieces || guaranteeRollOf6)
+        ) {
             optionsView.findViewById(R.id.bad_configuration_text).setVisibility(View.VISIBLE);
 
             return;
@@ -293,6 +300,7 @@ public class LauncherActivity extends CheshkaActivity {
                 this,
                 boardSize,
                 difficultySelection,
+                addInitialPieces,
                 guaranteeRollOf6,
                 null
         );
@@ -379,6 +387,12 @@ public class LauncherActivity extends CheshkaActivity {
                 preferences.getDifficultyDefaultSelection());
         configureSpinner(view.findViewById(R.id.board_size_spinner), R.array.board_size_array,
                 preferences.getBoardSizeDefaultSelection());
+        CheckBox addInitialPieces = view.findViewById(R.id.add_initial_pieces);
+        addInitialPieces.setChecked(preferences.shouldAddInitialPieces());
+        addInitialPieces.setOnCheckedChangeListener((checkbox, isChecked) -> {
+            preferences.setAddInitialPieces(isChecked);
+            preferences.savePreferences();
+        });
         CheckBox guarantee10 = view.findViewById(R.id.guarantee_10);
         guarantee10.setChecked(preferences.shouldGuaranteeRollOf6());
         guarantee10.setOnCheckedChangeListener((checkbox, isChecked) -> {
@@ -461,8 +475,10 @@ public class LauncherActivity extends CheshkaActivity {
                 preferences.setEnableMovementAnimation(isChecked);
             } else if (id == R.id.special_highlighting_checkbox) {
                 preferences.setEnableSpecialHighlighting(isChecked);
-            } else {
+            } else if (id == R.id.eval_bar_checkbox) {
                 preferences.setEnableEvalBar(isChecked);
+            } else {
+                preferences.setShowUserGeneratedContent(isChecked);
             }
 
             preferences.savePreferences();
@@ -487,6 +503,11 @@ public class LauncherActivity extends CheshkaActivity {
         CheckBox evalBarCheckbox = view.findViewById(R.id.eval_bar_checkbox);
         evalBarCheckbox.setChecked(preferences.shouldEnableEvalBar());
         evalBarCheckbox.setOnCheckedChangeListener(checkBoxListener);
+
+        CheckBox showUserGeneratedContent =
+                view.findViewById(R.id.show_user_generated_content_checkbox);
+        showUserGeneratedContent.setChecked(preferences.shouldShowUserGeneratedContent());
+        showUserGeneratedContent.setOnCheckedChangeListener(checkBoxListener);
 
         return view;
     }

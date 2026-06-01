@@ -31,11 +31,13 @@ public class HomeMenuActivity extends CheshkaActivity {
                 NetworkingThread.getServerCredentials(),
                 handler.getMessageOfTheDay())
         );
-        TextView serverStats = findViewById(R.id.server_stats_text);
-        serverStats.setText(getString(R.string.server_stats_text,
-                handler.onlinePlayerCount,
-                handler.activeGamesCount)
-        );
+        if (Cheshka.getInstance(this).getPreferences().shouldShowUserGeneratedContent()) {
+            TextView serverStats = findViewById(R.id.server_stats_text);
+            serverStats.setText(getString(R.string.server_stats_text,
+                    handler.onlinePlayerCount,
+                    handler.activeGamesCount)
+            );
+        }
 
         restoreButton(R.id.accept_invitation_button, savedInstanceState);
         restoreButton(R.id.create_invitation_button, savedInstanceState);

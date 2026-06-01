@@ -21,8 +21,10 @@ public class GamePreferences {
     private boolean enableMovementAnimation;
     private boolean enableSpecialHighlighting;
     private boolean enableEvalBar;
+    private boolean showUserGeneratedContent;
     private int difficultyDefaultSelection;
     private int boardSizeDefaultSelection;
+    private boolean addInitialPieces;
     private boolean guaranteeRollOf6;
     private String lastCommand;
     private String serializedGame;
@@ -36,20 +38,38 @@ public class GamePreferences {
     }
 
     public void loadPreferences() {
-        serverAddress = preferences.getString("serverAddress", DEFAULT_STRING_VALUE);
-        serverPort = preferences.getInt("serverPort", DEFAULT_INT_VALUE);
-        username = preferences.getString("username", DEFAULT_STRING_VALUE);
-        clientId = UUID.fromString(preferences.getString("clientId", NULL_UUID));
-        enableSounds = preferences.getBoolean("enableSounds", true);
-        showPlaytime = preferences.getBoolean("showPlaytime", true);
-        enableMovementAnimation = preferences.getBoolean("enableMovementAnimation", true);
-        enableSpecialHighlighting = preferences.getBoolean("enableSpecialHighlighting", true);
-        enableEvalBar = preferences.getBoolean("enableEvalBar", false);
-        difficultyDefaultSelection = preferences.getInt("difficultyDefaultSelection", 0);
-        boardSizeDefaultSelection = preferences.getInt("boardSizeDefaultSelection", 1);
-        guaranteeRollOf6 = preferences.getBoolean("guaranteeRollOf6", false);
-        lastCommand = preferences.getString("lastCommand", DEFAULT_STRING_VALUE);
-        serializedGame = preferences.getString("serializedGame", DEFAULT_STRING_VALUE);
+        serverAddress = preferences
+                .getString("serverAddress", DEFAULT_STRING_VALUE);
+        serverPort = preferences
+                .getInt("serverPort", DEFAULT_INT_VALUE);
+        username = preferences
+                .getString("username", DEFAULT_STRING_VALUE);
+        clientId = UUID.fromString(preferences
+                .getString("clientId", NULL_UUID));
+        enableSounds = preferences
+                .getBoolean("enableSounds", true);
+        showPlaytime = preferences
+                .getBoolean("showPlaytime", true);
+        enableMovementAnimation = preferences
+                .getBoolean("enableMovementAnimation", true);
+        enableSpecialHighlighting = preferences
+                .getBoolean("enableSpecialHighlighting", true);
+        enableEvalBar = preferences
+                .getBoolean("enableEvalBar", false);
+        showUserGeneratedContent = preferences
+                .getBoolean("showUserGeneratedContent", true);
+        difficultyDefaultSelection = preferences
+                .getInt("difficultyDefaultSelection", 0);
+        boardSizeDefaultSelection = preferences
+                .getInt("boardSizeDefaultSelection", 1);
+        addInitialPieces = preferences
+                .getBoolean("addInitialPieces", true);
+        guaranteeRollOf6 = preferences
+                .getBoolean("guaranteeRollOf6", false);
+        lastCommand = preferences
+                .getString("lastCommand", DEFAULT_STRING_VALUE);
+        serializedGame = preferences
+                .getString("serializedGame", DEFAULT_STRING_VALUE);
 
         latestLoadHashCode = hashCode();
     }
@@ -59,7 +79,7 @@ public class GamePreferences {
     }
 
     private void savePreferences(boolean forcibly) {
-        if (!forcibly && latestLoadHashCode == hashCode()) return; // looks like there are no changes
+        if (!forcibly && latestLoadHashCode == hashCode()) return; // no changes
 
         SharedPreferences.Editor editor = preferences.edit();
         editor.putString("serverAddress", serverAddress);
@@ -71,8 +91,10 @@ public class GamePreferences {
         editor.putBoolean("enableMovementAnimation", enableMovementAnimation);
         editor.putBoolean("enableSpecialHighlighting", enableSpecialHighlighting);
         editor.putBoolean("enableEvalBar", enableEvalBar);
+        editor.putBoolean("showUserGeneratedContent", showUserGeneratedContent);
         editor.putInt("difficultyDefaultSelection", difficultyDefaultSelection);
         editor.putInt("boardSizeDefaultSelection", boardSizeDefaultSelection);
+        editor.putBoolean("addInitialPieces", addInitialPieces);
         editor.putBoolean("guaranteeRollOf6", guaranteeRollOf6);
         editor.putString("lastCommand", lastCommand);
         editor.putString("serializedGame", serializedGame);
@@ -119,12 +141,20 @@ public class GamePreferences {
         return enableEvalBar;
     }
 
+    public boolean shouldShowUserGeneratedContent() {
+        return showUserGeneratedContent;
+    }
+
     public int getDifficultyDefaultSelection() {
         return difficultyDefaultSelection;
     }
 
     public int getBoardSizeDefaultSelection() {
         return boardSizeDefaultSelection;
+    }
+
+    public boolean shouldAddInitialPieces() {
+        return addInitialPieces;
     }
 
     public boolean shouldGuaranteeRollOf6() {
@@ -175,12 +205,20 @@ public class GamePreferences {
         this.enableEvalBar = enableEvalBar;
     }
 
+    public void setShowUserGeneratedContent(boolean showUserGeneratedContent) {
+        this.showUserGeneratedContent = showUserGeneratedContent;
+    }
+
     public void setDifficultyDefaultSelection(int difficultyDefaultSelection) {
         this.difficultyDefaultSelection = difficultyDefaultSelection;
     }
 
     public void setBoardSizeDefaultSelection(int boardSizeDefaultSelection) {
         this.boardSizeDefaultSelection = boardSizeDefaultSelection;
+    }
+
+    public void setAddInitialPieces(boolean addInitialPieces) {
+        this.addInitialPieces = addInitialPieces;
     }
 
     public void setGuaranteeRollOf6(boolean guaranteeRollOf6) {
@@ -212,8 +250,10 @@ public class GamePreferences {
                 enableMovementAnimation,
                 enableSpecialHighlighting,
                 enableEvalBar,
+                showUserGeneratedContent,
                 difficultyDefaultSelection,
                 boardSizeDefaultSelection,
+                addInitialPieces,
                 guaranteeRollOf6,
                 lastCommand,
                 serializedGame

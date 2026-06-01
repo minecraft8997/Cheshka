@@ -36,6 +36,14 @@
             android:minHeight="48dp" />
 
         <CheckBox
+            android:id="@+id/add_initial_pieces"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:minHeight="48dp"
+            android:textColor="@color/white"
+            android:text="@string/add_initial_pieces_text" />
+
+        <CheckBox
             android:id="@+id/guarantee_10"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

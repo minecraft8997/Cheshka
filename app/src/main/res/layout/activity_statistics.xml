@@ -9,7 +9,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="15dp"
+        android:layout_marginTop="12dp"
         android:orientation="horizontal"
         android:weightSum="2"
         tools:ignore="UselessParent">
@@ -45,6 +45,15 @@
             android:layout_margin="5dp"
             android:divider="?android:attr/listDivider"
             android:showDividers="middle">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/grey"
+                android:layout_marginTop="4dp"
+                android:layout_marginBottom="8dp"
+                android:gravity="center"
+                android:text="@string/statistics_explanation_text" />
 
             <TextView
                 android:layout_width="match_parent"

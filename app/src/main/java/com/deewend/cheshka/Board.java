@@ -43,10 +43,12 @@ public class Board {
             return position;
         }
 
-        public void setPosition(int position) {
+        public Piece setPosition(int position) {
             if (position < this.position) revertedPosition = true;
 
             this.position = position;
+
+            return this;
         }
 
         public boolean hasRevertedPosition() {
@@ -128,10 +130,7 @@ public class Board {
             if (target != null) pieces.remove(target);
 
             if (isSpawningMove()) {
-                Piece piece = new Piece(whitesTurn);
-                piece.setPosition(getSpawnPosition());
-
-                pieces.add(piece);
+                pieces.add((new Piece(whitesTurn)).setPosition(getSpawnPosition()));
             } else {
                 int oldPosition = piece.getPosition();
                 piece.setPosition(destination);
@@ -143,9 +142,10 @@ public class Board {
                 getRenderingXY(destination, coordinates);
                 int x2 = coordinates.first;
                 int y2 = coordinates.second;
+                boolean own = (piece.whitePiece == PacketHandler.getInstance().whiteColor);
 
                 MovementAnimationManager
-                        .getInstance().registerAnimation(x1, y1, x2, y2, piece.whitePiece);
+                        .getInstance().registerAnimation(x1, y1, x2, y2, piece.whitePiece, own);
             }
         }
 
@@ -256,6 +256,7 @@ public class Board {
     private boolean doNotReRoll6NoticeablyHard = true;
     private int whitesSkippedMovesGuarantee6;
     private int blacksSkippedMovesGuarantee6;
+    private boolean scheduledTiebreak;
 
     public Board(
             boolean clientside,
@@ -287,6 +288,23 @@ public class Board {
     }
 
     public int randomDigit() {
+        if (scheduledTiebreak) {
+            boolean hasAtLeastOnePiece = false;
+            PacketHandler handler = PacketHandler.getInstance();
+            for (Piece piece : getPieces()) {
+                boolean whitePiece = piece.isWhitePiece();
+                boolean playersTurn = Singleplayer.isPlayersTurn();
+                if ((playersTurn && whitePiece == handler.whiteColor) ||
+                        (!playersTurn && whitePiece == Singleplayer.isBotWhiteColor())) {
+                    hasAtLeastOnePiece = true;
+
+                    break;
+                }
+            }
+            scheduledTiebreak = false;
+
+            return (hasAtLeastOnePiece ? 1 : 6);
+        }
         int digit = trulyRandomDigit();
         boolean noticeablyHard =
                 (PacketHandler.getInstance().singleplayer && Singleplayer.isNoticeablyHard());
@@ -670,7 +688,8 @@ public class Board {
         if (move instanceof NoMove) {
             noMovesCounter++;
             if (noMovesCounter >= noMoveDrawThreshold) {
-                gameState = GAME_STATE_DRAW;
+                if (PacketHandler.getInstance().singleplayer) scheduledTiebreak = true;
+                else                                          gameState = GAME_STATE_DRAW;
             }
             if (whitesTurn) whitesSkippedMovesGuarantee6++;
             else            blacksSkippedMovesGuarantee6++;
@@ -925,6 +944,7 @@ public class Board {
                 ", doNotReRoll6NoticeablyHard=" + doNotReRoll6NoticeablyHard +
                 ", whitesSkippedMovesGuarantee6=" + whitesSkippedMovesGuarantee6 +
                 ", blacksSkippedMovesGuarantee6=" + blacksSkippedMovesGuarantee6 +
+                ", scheduledTiebreak=" + scheduledTiebreak +
                 '}';
 
         return result;
@@ -998,6 +1018,7 @@ public class Board {
                 Integer.parseInt(props.getProperty("whitesSkippedMovesGuarantee6"));
         board.blacksSkippedMovesGuarantee6 =
                 Integer.parseInt(props.getProperty("blacksSkippedMovesGuarantee6"));
+        board.scheduledTiebreak = Boolean.parseBoolean(props.getProperty("scheduledTiebreak"));
 
         return board;
     }

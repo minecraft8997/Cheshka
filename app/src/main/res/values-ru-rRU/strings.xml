@@ -100,11 +100,11 @@
     <string name="settings_text">Настройки</string>
     <string name="autosave_text">Изменения сохраняются автоматически</string>
     <string name="close_text">Закрыть</string>
-    <string name="multiplayer_text">Многопользовательская игра</string>
+    <string name="multiplayer_text">Сетевая игра</string>
     <string name="cmd_dispatcher_text">Экспериментальный обработчик команд (<a href="https://cheshka.deewend.com/commands-ru">больше информации</a>)</string>
     <string name="execute_command_text">Выполнить команду</string>
     <string name="cmd_should_start_with">Команды должны начинаться с символа \'!\'</string>
-    <string name="bad_configuration_text">Пожалуйста, отключите эту опцию для игры в \"Ощутимо сложный\" режим</string>
+    <string name="bad_configuration_text">Пожалуйста, отключите обе опции выше для игры в \"Ощутимо сложный\" режим</string>
     <string name="empty_server_address_text">Пожалуйста, укажите адрес сервера (например, playcheshka.deewend.com)</string>
     <string name="huawei_notification_text">Эта сборка игры предназначена для HUAWEI AppGallery. Здесь присутствует возможность подключения только к официальному серверу игры.</string>
     <string name="third_party_servers_warning_text">Режим сетевой игры поддерживает подключение к серверам, созданным пользователями. Контент на этих площадках, включая имена игроков и сообщения серверов, не модерируется разработчиком. Вы можете столкнуться с нежелательным контентом. Подключайтесь только к серверам, которым доверяете.</string>
@@ -126,4 +126,8 @@
     <string name="recovery_error_text">Не удалось восстановить Вашу игру, приносим извинения</string>
     <string name="unknown_text">&lt;неизвестно&gt;</string>
     <string name="recovery_later_warning_text">Пожалуйста, обратите внимание, что запуск новый игры приведёт к утере предыдущей сессии</string>
+    <string name="show_user_generated_content_checkbox_text">Показывать пользовательский контент (сетевая игра)</string>
+    <string name="add_initial_pieces_text">Добавить начальные шашки (рекомендовано новичкам)</string>
+    <string name="statistics_explanation_text">Белые числа – сколько раз эта грань была использована\nСерые числа – сколько раз эта грань выпадала всего\nРазница в процентах рассчитывается по белым числам</string>
+    <string name="sum_text">Сумма</string>
 </resources>
