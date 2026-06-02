@@ -123,7 +123,7 @@ public class LauncherActivity extends CheshkaActivity {
         if (id == R.id.multiplayer_button) {
             showMultiplayerDialog();
 
-            return DISABLE_CURRENT_BUTTON;
+            return DO_NOT_DISABLE;
         }
         if (id == R.id.settings_button) {
             showSettingsDialog();

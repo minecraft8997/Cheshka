@@ -33,7 +33,8 @@ public class DisconnectedActivity extends CheshkaActivity {
                 ((GameProtocolException) throwable).setContext(this);
             }
 
-            stackTrace = Helper.getStackTraceString(throwable);
+            stackTrace = Helper.getStackTraceString(throwable)
+                    .replace(BuildConfig.APPLICATION_ID, "");
         } else {
             stackTrace = getString(R.string.not_specified_text);
         }

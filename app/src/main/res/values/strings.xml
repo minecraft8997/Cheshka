@@ -16,7 +16,7 @@
     <string name="protocol_unexpected_text">"expected to receive %s packet, got: "</string>
     <string name="protocol_bad_magic_text">bad magic number</string>
     <string name="protocol_error_text">A communication issue occurred: %s</string>
-    <string name="disconnected_text">disconnected from the server, the reported reason is \"%s\".</string>
+    <string name="disconnected_text">disconnected, reason: \"%s\".</string>
     <string name="please_wait_text">Please wait…</string>
     <string name="bad_integer_text">Found a bad integer in one of the input fields, please try again</string>
     <string name="captcha_text">Captcha challenge</string>
