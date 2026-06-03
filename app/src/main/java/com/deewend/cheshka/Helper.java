@@ -301,20 +301,25 @@ public class Helper {
     }
 
     /*
-     * Supported only in singleplayer mode.
+     * serializeGame() and serializeGameToString() are supported only in singleplayer mode.
      */
     public static void serializeGame(GamePreferences preferences) {
+        String serializedGame = serializeGameToString();
+        if (serializedGame == null) return;
+        if (preferences.getSerializedGame().equals(serializedGame)) return;
+
+        preferences.setSerializedGame(serializedGame);
+    }
+
+    public static String serializeGameToString() {
         Board board = PacketHandler.getInstance().board;
-        if (board == null) return;
+        if (board == null) return null;
 
         List<String> serializedGameObjects = new ArrayList<>();
         serializedGameObjects.add(board.toString());
         serializedGameObjects.add(Singleplayer._toString(true));
 
-        String serializedGame = listToString(serializedGameObjects);
-        if (preferences.getSerializedGame().equals(serializedGame)) return;
-
-        preferences.setSerializedGame(serializedGame);
+        return listToString(serializedGameObjects);
     }
 
     /*

@@ -289,21 +289,13 @@ public class Board {
 
     public int randomDigit() {
         if (scheduledTiebreak) {
-            boolean hasAtLeastOnePiece = false;
-            PacketHandler handler = PacketHandler.getInstance();
-            for (Piece piece : getPieces()) {
-                boolean whitePiece = piece.isWhitePiece();
-                boolean playersTurn = Singleplayer.isPlayersTurn();
-                if ((playersTurn && whitePiece == handler.whiteColor) ||
-                        (!playersTurn && whitePiece == Singleplayer.isBotWhiteColor())) {
-                    hasAtLeastOnePiece = true;
-
-                    break;
-                }
+            List<Integer> goodDigits = new ArrayList<>();
+            for (int i = 1; i <= 6; i++) {
+                if (!calculatePossibleMoves(i).isEmpty()) goodDigits.add(i);
             }
             scheduledTiebreak = false;
 
-            return (hasAtLeastOnePiece ? 1 : 6);
+            return goodDigits.get(random.nextInt(goodDigits.size()));
         }
         int digit = trulyRandomDigit();
         boolean noticeablyHard =
@@ -502,17 +494,7 @@ public class Board {
     private DiceRolled rollDice0(int digit) {
         if (lastDiceRollResult != null) return null;
 
-        List<PossibleMove> possibleMoves = new ArrayList<>();
-        if (isMovePossible(null, digit)) {
-            possibleMoves.add(new PossibleMove(null, getSpawnPosition()));
-        }
-        for (Piece piece : pieces) {
-            if (piece.whitePiece != whitesTurn) continue;
-
-            if (isMovePossible(piece, digit)) {
-                possibleMoves.add(new PossibleMove(piece, lastCalculatedDestination));
-            }
-        }
+        List<PossibleMove> possibleMoves = calculatePossibleMoves(digit);
         int[] stats;
         int[] overallStats;
         int idx = digit - 1;
@@ -545,6 +527,22 @@ public class Board {
         }
 
         return packet;
+    }
+
+    private List<PossibleMove> calculatePossibleMoves(int digit) {
+        List<PossibleMove> possibleMoves = new ArrayList<>();
+        if (isMovePossible(null, digit)) {
+            possibleMoves.add(new PossibleMove(null, getSpawnPosition()));
+        }
+        for (Piece piece : pieces) {
+            if (piece.whitePiece != whitesTurn) continue;
+
+            if (isMovePossible(piece, digit)) {
+                possibleMoves.add(new PossibleMove(piece, lastCalculatedDestination));
+            }
+        }
+
+        return possibleMoves;
     }
 
     /*
