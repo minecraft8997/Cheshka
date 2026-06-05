@@ -319,7 +319,14 @@ public class BoardView extends CheshkaView {
             blackPieceReliefPaint = rgbPaint(64, 64, 64);
             crownPaint = rgbPaint(255, 215, 0);
             crownBorderPaint = rgbPaint(220, 190, 0);
-            highlightedCellPaint = argbPaint(192, 255, 255, 0);
+            byte highlightedCellColor = Cheshka.getInstance(activity)
+                    .getPreferences()
+                    .getHighlightedCellColor();
+            if (highlightedCellColor == 0) { // clean yellow
+                highlightedCellPaint = argbPaint(192, 255, 255, 0);
+            } else { // bright cyan
+                highlightedCellPaint = argbPaint(192, 0, 255, 255);
+            }
 
             pieceBorderPaint.setStyle(Paint.Style.STROKE);
             redPieceBorderPaint.setStyle(Paint.Style.STROKE);

@@ -130,4 +130,9 @@
     <string name="add_initial_pieces_text">Добавить начальные шашки (рекомендовано новичкам)</string>
     <string name="statistics_explanation_text">Белые числа – сколько раз эта грань была использована\nСерые числа – сколько раз эта грань выпадала всего\nРазница в процентах рассчитывается по белым числам</string>
     <string name="sum_text">Сумма</string>
+    <string-array name="highlighted_cell_color_array">
+        <item>Чистый жёлтый</item>
+        <item>Яркий циан</item>
+    </string-array>
+    <string name="destination_cell_color_text">Цвет клетки назначения:</string>
 </resources>

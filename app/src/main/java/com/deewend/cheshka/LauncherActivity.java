@@ -330,10 +330,25 @@ public class LauncherActivity extends CheshkaActivity {
 
         TextView recoveryDialog = view.findViewById(R.id.recovery_dialog_text);
         Long gameStartTimestamp = Helper.getSavedGameStartTime(preferences.getSerializedGame());
-        String when = (gameStartTimestamp == null ?
-                getString(R.string.unknown_text) :
-                DateUtils.getRelativeTimeSpanString(gameStartTimestamp).toString().toLowerCase()
-        );
+        String when;
+        if (gameStartTimestamp == null) {
+            when = getString(R.string.unknown_text);
+        } else {
+            when = DateUtils.getRelativeTimeSpanString(gameStartTimestamp).toString();
+            String[] months = {"January", "February", "March", "April", "May", "June",
+                    "July", "August", "September", "October", "November", "December"};
+            // in Russian, month names are written in lower case, check only English
+            boolean enMonth = false;
+            for (String month : months) {
+                if (when.startsWith(month)) {
+                    enMonth = true;
+
+                    break;
+                }
+            }
+            if (enMonth) when = "on " + when;
+            else         when = when.toLowerCase();
+        }
         recoveryDialog.setText(getString(R.string.game_recovery_dialog_text, when));
 
         view.findViewById(R.id.recovery_yes_button).setOnClickListener((v) -> {
@@ -509,6 +524,10 @@ public class LauncherActivity extends CheshkaActivity {
         showUserGeneratedContent.setChecked(preferences.shouldShowUserGeneratedContent());
         showUserGeneratedContent.setOnCheckedChangeListener(checkBoxListener);
 
+        configureSpinner(view.findViewById(R.id.highlighted_cell_color_spinner),
+                R.array.highlighted_cell_color_array,
+                preferences.getHighlightedCellColor());
+
         return view;
     }
 
@@ -562,9 +581,11 @@ public class LauncherActivity extends CheshkaActivity {
         if (arrayId == R.array.difficulty_array) {
             difficultySelection = position;
             preferences.setDifficultyDefaultSelection(position);
-        } else {
+        } else if (arrayId == R.array.board_size_array) {
             boardSizeSelection = position;
             preferences.setBoardSizeDefaultSelection(position);
+        } else {
+            preferences.setHighlightedCellColor((byte) position);
         }
 
         preferences.savePreferences();

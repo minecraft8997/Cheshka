@@ -22,6 +22,7 @@ public class GamePreferences {
     private boolean enableSpecialHighlighting;
     private boolean enableEvalBar;
     private boolean showUserGeneratedContent;
+    private byte highlightedCellColor;
     private int difficultyDefaultSelection;
     private int boardSizeDefaultSelection;
     private boolean addInitialPieces;
@@ -58,8 +59,10 @@ public class GamePreferences {
                 .getBoolean("enableEvalBar", false);
         showUserGeneratedContent = preferences
                 .getBoolean("showUserGeneratedContent", true);
+        highlightedCellColor = (byte) preferences
+                .getInt("highlightedCellColor", DEFAULT_INT_VALUE);
         difficultyDefaultSelection = preferences
-                .getInt("difficultyDefaultSelection", 0);
+                .getInt("difficultyDefaultSelection", DEFAULT_INT_VALUE);
         boardSizeDefaultSelection = preferences
                 .getInt("boardSizeDefaultSelection", 1);
         addInitialPieces = preferences
@@ -92,6 +95,7 @@ public class GamePreferences {
         editor.putBoolean("enableSpecialHighlighting", enableSpecialHighlighting);
         editor.putBoolean("enableEvalBar", enableEvalBar);
         editor.putBoolean("showUserGeneratedContent", showUserGeneratedContent);
+        editor.putInt("highlightedCellColor", highlightedCellColor);
         editor.putInt("difficultyDefaultSelection", difficultyDefaultSelection);
         editor.putInt("boardSizeDefaultSelection", boardSizeDefaultSelection);
         editor.putBoolean("addInitialPieces", addInitialPieces);
@@ -143,6 +147,10 @@ public class GamePreferences {
 
     public boolean shouldShowUserGeneratedContent() {
         return showUserGeneratedContent;
+    }
+
+    public byte getHighlightedCellColor() {
+        return highlightedCellColor;
     }
 
     public int getDifficultyDefaultSelection() {
@@ -209,6 +217,10 @@ public class GamePreferences {
         this.showUserGeneratedContent = showUserGeneratedContent;
     }
 
+    public void setHighlightedCellColor(byte highlightedCellColor) {
+        this.highlightedCellColor = highlightedCellColor;
+    }
+
     public void setDifficultyDefaultSelection(int difficultyDefaultSelection) {
         this.difficultyDefaultSelection = difficultyDefaultSelection;
     }
@@ -251,6 +263,7 @@ public class GamePreferences {
                 enableSpecialHighlighting,
                 enableEvalBar,
                 showUserGeneratedContent,
+                highlightedCellColor,
                 difficultyDefaultSelection,
                 boardSizeDefaultSelection,
                 addInitialPieces,

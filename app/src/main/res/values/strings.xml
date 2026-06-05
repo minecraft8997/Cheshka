@@ -133,4 +133,9 @@
     <string name="add_initial_pieces_text">Add the initial pieces (recommended for beginners)</string>
     <string name="statistics_explanation_text">White numbers – times this face was used\nGrey numbers – total times this face was rolled\nPercentage difference is based on the white numbers</string>
     <string name="sum_text">Sum</string>
+    <string-array name="highlighted_cell_color_array">
+        <item>Clean yellow</item>
+        <item>Bright cyan</item>
+    </string-array>
+    <string name="destination_cell_color_text">Destination cell color:</string>
 </resources>
