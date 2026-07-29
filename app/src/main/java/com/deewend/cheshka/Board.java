@@ -222,7 +222,7 @@ public class Board {
     /*
      * Used only when "guaranteeRollOf6" field is set to true.
      */
-    public static final int SKIPPED_MOVES_BEFORE_FORCED_ROLL_OF_6 = 3;
+    public static final int SKIPPED_MOVES_BEFORE_FORCED_ROLL_OF_6 = 10;
 
     private final boolean clientside;
     private final Random random;
