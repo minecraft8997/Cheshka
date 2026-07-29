@@ -4,14 +4,14 @@ plugins {
 
 android {
     namespace 'com.deewend.cheshka'
-    compileSdk 34
+    compileSdk 37
 
     defaultConfig {
         applicationId "com.deewend.cheshka"
         minSdk 16
-        targetSdk 35
-        versionCode 12
-        versionName "1.2.1"
+        targetSdk 36
+        versionCode 14
+        versionName "1.2.1f"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }

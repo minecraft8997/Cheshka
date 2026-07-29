@@ -1,5 +1,5 @@
 [versions]
-agp = "8.6.1"
+agp = "9.2.1"
 appcompat = "1.4.2" # seems to be the last version that supports minSdk 16
 
 [libraries]
